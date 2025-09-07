@@ -57,13 +57,15 @@
         <div class="lab-area">
             <div class="lab-grid"></div>
             <canvas id="gameCanvas"></canvas>
-        </div>
+        <div class="instructions" style="background: rgba(0,0,0,0.95); color: #00FFFF; padding: 15px; text-align: center; border-bottom: 2px solid #FF0080; font-size: 16px; font-weight: 700;">
+            <div id="instructionText">🎯 OBJETIVO: 1️⃣ Arrastra objetos para crear camino 2️⃣ Presiona TEST 3️⃣ Guía partícula amarilla al cuadro verde ✅</div>
+        </div>        </div>
         
         <div class="controls">
             <button class="btn btn-reset" onclick="resetLevel()">🔄 RESET</button>
             <button class="btn btn-primary" onclick="launchParticle()">🚀 TEST</button>
             <button class="btn btn-secondary" onclick="nextLevel()">➡️ NEXT</button>
-            <button class="btn btn-reset" onclick="showHint()">💡 HINT</button>
+            <button class="btn btn-reset" onclick="showTutorial()">❓ HELP</button>
         </div>
     </div>
     
@@ -154,7 +156,7 @@
         }
         
         const levels = [
-            { name: "BASIC RAMP", objects: [{ type: 'ramp', x: 200, y: 300, width: 100, height: 50 }], launcher: { x: 50, y: 200 }, chamber: { x: 350, y: 350 }, hint: "Use the ramp to guide the particle!" },
+            { name: "TUTORIAL BÁSICO", objects: [{ type: 'ramp', x: 200, y: 300, width: 100, height: 50 }], launcher: { x: 50, y: 200 }, chamber: { x: 350, y: 350 }, hint: "Arrastra la rampa rosa para crear un camino desde el círculo amarillo al cuadro verde" },
             { name: "BOUNCY CASTLE", objects: [{ type: 'bouncy-pad', x: 150, y: 300, width: 60, height: 60 }, { type: 'block', x: 250, y: 250, width: 80, height: 30 }], launcher: { x: 50, y: 350 }, chamber: { x: 350, y: 200 }, hint: "Bounce off the pad!" },
             { name: "BLOCK PUZZLE", objects: [{ type: 'block', x: 150, y: 300, width: 80, height: 30 }, { type: 'block', x: 280, y: 250, width: 60, height: 40 }], launcher: { x: 50, y: 250 }, chamber: { x: 380, y: 350 }, hint: "Create a path with blocks!" }
         ];
@@ -187,7 +189,19 @@
         
         function resetLevel() { loadLevel(gameState.currentLevel); gameState.gameActive = false; }
         function nextLevel() { if (gameState.currentLevel < levels.length) { gameState.currentLevel++; loadLevel(gameState.currentLevel); } }
-        function showHint() { const level = levels[gameState.currentLevel - 1]; if (level && level.hint) alert(level.hint); }
+        function showTutorial() {
+            const tutorial = `🧪 CÓMO JUGAR NEON LAB:\n\n` +
+                `1️⃣ ARRASTRA objetos con el dedo/mouse\n` +
+                `2️⃣ CREA un camino para la partícula\n` +
+                `3️⃣ Presiona TEST para lanzar\n` +
+                `4️⃣ GUÍA la partícula al cuadro verde\n\n` +
+                `🎯 OBJETOS:\n` +
+                `📐 RAMPAS: Dirigen la partícula\n` +
+                `🟦 BLOQUES: Crean obstáculos\n` +
+                `🟢 BOUNCY: Hacen rebotar\n\n` +
+                `💡 CONSEJO: ${levels[gameState.currentLevel - 1]?.hint || "Experimenta y diviértete!"}`;
+            alert(tutorial);
+        }
         
         let isDragging = false;
         
@@ -243,6 +257,37 @@
             gameState.objects.forEach(obj => obj.render(ctx));
             if (gameState.particle) gameState.particle.render(ctx);
             
+            // Render tutorial indicators for level 1
+            if (gameState.currentLevel === 1) {
+                // Arrow from launcher to chamber
+                ctx.save();
+                ctx.strokeStyle = "#FFFF00";
+                ctx.lineWidth = 3;
+                ctx.setLineDash([10, 5]);
+                ctx.beginPath();
+                ctx.moveTo(gameState.particleLauncher.x + 30, gameState.particleLauncher.y + 15);
+                ctx.lineTo(gameState.collectionChamber.x, gameState.collectionChamber.y + 25);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Labels
+                ctx.fillStyle = "#FFFF00";
+                ctx.font = "bold 14px Orbitron";
+                ctx.textAlign = "center";
+                ctx.fillText("INICIO", gameState.particleLauncher.x + 15, gameState.particleLauncher.y - 10);
+                ctx.fillText("META", gameState.collectionChamber.x + 25, gameState.collectionChamber.y - 10);
+                
+                // Instructions on draggable objects
+                gameState.objects.forEach(obj => {
+                    if (obj.draggable) {
+                        ctx.fillStyle = "#FF0080";
+                        ctx.font = "bold 12px Orbitron";
+                        ctx.fillText("ARRASTRA", obj.x + obj.width/2, obj.y - 15);
+                    }
+                });
+                
+                ctx.restore();
+            }            
             requestAnimationFrame(gameLoop);
         }
         
