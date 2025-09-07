@@ -58,7 +58,7 @@
             <div class="lab-grid"></div>
             <canvas id="gameCanvas"></canvas>
         <div class="instructions" style="background: rgba(0,0,0,0.95); color: #00FFFF; padding: 15px; text-align: center; border-bottom: 2px solid #FF0080; font-size: 16px; font-weight: 700;">
-            <div id="instructionText">🎯 OBJETIVO: 1️⃣ Arrastra objetos para crear camino 2️⃣ Presiona TEST 3️⃣ Guía partícula amarilla al cuadro verde ✅</div>
+            <div id="instructionText">🎯 OBJETIVO: 1️⃣ Arrastra objetos 2️⃣ DOBLE TAP para rotar 3️⃣ Presiona TEST 4️⃣ Partícula rebota hasta el cuadro verde ✅</div>
         </div>        </div>
         
         <div class="controls">
@@ -73,7 +73,9 @@
         (adsbygoogle = window.adsbygoogle || []).push({});
         
         let gameState = { currentLevel: 1, gameActive: false, draggedObject: null, dragOffset: { x: 0, y: 0 }, objects: [], particle: null, particleLauncher: null, collectionChamber: null, levelComplete: false };
-        
+        let isDragging = false;
+        let lastTapTime = 0;
+        let tapTarget = null;        
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
@@ -87,7 +89,7 @@
             constructor(type, x, y, width, height, properties = {}) {
                 this.type = type; this.x = x; this.y = y; this.width = width; this.height = height;
                 this.rotation = properties.rotation || 0; this.mass = properties.mass || 1;
-                this.color = properties.color || '#FF0080'; this.draggable = properties.draggable !== false;
+                this.color = properties.color || '#FF0080'; this.draggable = properties.draggable !== false; this.rotation = properties.rotation || 0;
                 this.isStatic = properties.isStatic || false;
             }
             
@@ -132,18 +134,108 @@
         }
         
         class Particle {
-            constructor(x, y) { this.x = x; this.y = y; this.vx = 0; this.vy = 0; this.radius = 6; this.active = true; this.trail = []; }
+            constructor(x, y) { 
+                this.x = x; this.y = y; this.vx = 0; this.vy = 0; this.radius = 6; 
+                this.active = true; this.trail = []; this.bounces = 0;
+            }
             
             update(deltaTime) {
                 if (!this.active) return;
-                this.vy += 300 * deltaTime; // gravity
-                this.x += this.vx * deltaTime; this.y += this.vy * deltaTime;
+                
+                // Apply gravity
+                this.vy += 300 * deltaTime;
+                
+                // Store old position for collision detection
+                const oldX = this.x, oldY = this.y;
+                
+                // Update position
+                this.x += this.vx * deltaTime;
+                this.y += this.vy * deltaTime;
+                
+                // Check collisions with all objects
+                gameState.objects.forEach(obj => {
+                    if (this.checkCollisionWithObject(obj)) {
+                        this.resolveCollision(obj, oldX, oldY);
+                    }
+                });
+                
+                // Boundary collisions
+                if (this.x - this.radius < 0) {
+                    this.x = this.radius;
+                    this.vx = Math.abs(this.vx) * 0.8;
+                    this.playBounceSound();
+                }
+                if (this.x + this.radius > canvas.width) {
+                    this.x = canvas.width - this.radius;
+                    this.vx = -Math.abs(this.vx) * 0.8;
+                    this.playBounceSound();
+                }
+                if (this.y - this.radius < 0) {
+                    this.y = this.radius;
+                    this.vy = Math.abs(this.vy) * 0.8;
+                    this.playBounceSound();
+                }
+                
+                // Update trail
                 this.trail.push({ x: this.x, y: this.y, alpha: 1 });
                 if (this.trail.length > 10) this.trail.shift();
                 this.trail.forEach((point, index) => { point.alpha = index / this.trail.length; });
+                
+                // Remove if falls off screen
                 if (this.y > canvas.height + 50) this.active = false;
             }
             
+            checkCollisionWithObject(obj) {
+                // Simple AABB vs Circle collision
+                const closestX = Math.max(obj.x, Math.min(this.x, obj.x + obj.width));
+                const closestY = Math.max(obj.y, Math.min(this.y, obj.y + obj.height));
+                const dx = this.x - closestX;
+                const dy = this.y - closestY;
+                return (dx * dx + dy * dy) < (this.radius * this.radius);
+            }
+            
+            resolveCollision(obj, oldX, oldY) {
+                // Calculate collision normal
+                const centerX = obj.x + obj.width / 2;
+                const centerY = obj.y + obj.height / 2;
+                
+                let normalX = this.x - centerX;
+                let normalY = this.y - centerY;
+                const length = Math.sqrt(normalX * normalX + normalY * normalY);
+                
+                if (length > 0) {
+                    normalX /= length;
+                    normalY /= length;
+                } else {
+                    normalX = 0; normalY = -1; // Default to up
+                }
+                
+                // Move particle out of collision
+                this.x = centerX + normalX * (obj.width/2 + this.radius + 2);
+                this.y = centerY + normalY * (obj.height/2 + this.radius + 2);
+                
+                // Calculate reflection
+                const elasticity = obj.type === 'bouncy-pad' ? 1.2 : 0.7;
+                const dot = this.vx * normalX + this.vy * normalY;
+                
+                this.vx -= 2 * dot * normalX * elasticity;
+                this.vy -= 2 * dot * normalY * elasticity;
+                
+                // Special behavior for ramps
+                if (obj.type === 'ramp') {
+                    const rampAngle = obj.rotation;
+                    this.vx = Math.cos(rampAngle) * 120;
+                    this.vy = Math.sin(rampAngle) * 120;
+                }
+                
+                this.bounces++;
+                this.playBounceSound();
+            }
+            
+            playBounceSound() {
+                const frequency = 200 + this.bounces * 50;
+                playSound(frequency, 0.1, 'triangle', 0.4);
+            }            
             render(ctx) {
                 if (!this.active) return;
                 this.trail.forEach((point, index) => {
@@ -191,7 +283,8 @@
         function nextLevel() { if (gameState.currentLevel < levels.length) { gameState.currentLevel++; loadLevel(gameState.currentLevel); } }
         function showTutorial() {
             const tutorial = `🧪 CÓMO JUGAR NEON LAB:\n\n` +
-                `1️⃣ ARRASTRA objetos con el dedo/mouse\n` +
+                `1️⃣ ARRASTRA objetos con el dedo
+2ufe0fu20e3 DOBLE TAP para ROTAR/mouse\n` +
                 `2️⃣ CREA un camino para la partícula\n` +
                 `3️⃣ Presiona TEST para lanzar\n` +
                 `4️⃣ GUÍA la partícula al cuadro verde\n\n` +
@@ -213,14 +306,31 @@
         }
         
         function handleStart(event) {
-            event.preventDefault(); const mousePos = getMousePos(event);
+            event.preventDefault();
+            const mousePos = getMousePos(event);
+            const currentTime = Date.now();
+            
             for (let obj of gameState.objects) {
                 if (obj.draggable && obj.contains(mousePos.x, mousePos.y)) {
-                    gameState.draggedObject = obj; gameState.dragOffset = { x: mousePos.x - obj.x, y: mousePos.y - obj.y };
-                    isDragging = true; break;
+                    // Check for double tap (rotation)
+                    if (tapTarget === obj && currentTime - lastTapTime < 300) {
+                        // DOUBLE TAP: Rotate object 45 degrees
+                        obj.rotation += Math.PI / 4;
+                        playSound(800, 0.1, 'square', 0.3); // Rotation sound
+                        tapTarget = null;
+                        lastTapTime = 0;
+                        return;
+                    }
+                    
+                    // Single tap: Start dragging
+                    gameState.draggedObject = obj;
+                    gameState.dragOffset = { x: mousePos.x - obj.x, y: mousePos.y - obj.y };
+                    isDragging = true;
+                    tapTarget = obj;
+                    lastTapTime = currentTime;
+                    break;
                 }
-            }
-        }
+            }        }
         
         function handleMove(event) {
             event.preventDefault(); if (!isDragging || !gameState.draggedObject) return;
