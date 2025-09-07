@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Lab - Physics Puzzle | LIPA Studios</title>
+    <meta name="description" content="Solve physics puzzles in a cyberpunk laboratory! Manipulate objects, master gravity, and complete experiments.">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-633RQLC6T0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-633RQLC6T0');
+    </script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Orbitron', monospace; background: linear-gradient(135deg, #050505 0%, #0a0a0a 50%, #1a0a1a 100%); color: #00FFFF; overflow: hidden; height: 100vh; user-select: none; }
+        .game-container { width: 100%; height: 100vh; display: flex; flex-direction: column; position: relative; }
+        .header { height: 60px; background: rgba(0,0,0,0.8); border-bottom: 2px solid #FF0080; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 100; }
+        .header h1 { color: #39FF14; font-size: 24px; font-weight: 700; text-shadow: 0 0 10px #39FF14; letter-spacing: 2px; }
+        .level-info { display: flex; gap: 20px; align-items: center; }
+        .level-number { color: #FFFF00; font-weight: 700; font-size: 18px; text-shadow: 0 0 8px #FFFF00; }
+        .lab-area { flex: 1; position: relative; background: radial-gradient(circle at 20% 80%, rgba(255,0,128,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0,255,255,0.1) 0%, transparent 50%), linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%); overflow: hidden; }
+        .lab-grid { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+        #gameCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: grab; will-change: transform; }
+        #gameCanvas:active { cursor: grabbing; }
+        .controls { height: 80px; background: rgba(0,0,0,0.9); border-top: 2px solid #00FFFF; display: flex; justify-content: center; align-items: center; gap: 15px; padding: 10px; }
+        .btn { padding: 12px 20px; border: none; border-radius: 8px; font-family: 'Orbitron', monospace; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(255,255,255,0.1); min-width: 80px; }
+        .btn-primary { background: linear-gradient(45deg, #FF0080, #FF6600); color: white; text-shadow: 0 0 5px rgba(255,255,255,0.8); }
+        .btn-secondary { background: linear-gradient(45deg, #00FFFF, #39FF14); color: #000; text-shadow: none; }
+        .btn-reset { background: linear-gradient(45deg, #666, #999); color: white; }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(255,255,255,0.3); }
+        .success-explosion { position: absolute; width: 100px; height: 100px; border-radius: 50%; background: radial-gradient(circle, rgba(57,255,20,0.8) 0%, transparent 70%); animation: successBlast 0.6s ease-out forwards; pointer-events: none; z-index: 100; }
+        @keyframes successBlast { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(4); opacity: 0; } }
+        @media (max-width: 768px) { .header h1 { font-size: 18px; } .btn { padding: 8px 12px; font-size: 12px; min-width: 60px; } }
+    </style>
+</head>
+<body>
+    <!-- AdSense Banner -->
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4129506161314540" data-ad-slot="auto" data-ad-format="auto"></ins>
+    
+    <div class="game-container">
+        <header class="header">
+            <h1>🧪 NEON LAB</h1>
+            <div class="level-info">
+                <div class="level-number" id="levelDisplay">LEVEL 1</div>
+                <div id="starsDisplay">⭐⭐⭐</div>
+            </div>
+        </header>
+        
+        <div class="lab-area">
+            <div class="lab-grid"></div>
+            <canvas id="gameCanvas"></canvas>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-reset" onclick="resetLevel()">🔄 RESET</button>
+            <button class="btn btn-primary" onclick="launchParticle()">🚀 TEST</button>
+            <button class="btn btn-secondary" onclick="nextLevel()">➡️ NEXT</button>
+            <button class="btn btn-reset" onclick="showHint()">💡 HINT</button>
+        </div>
+    </div>
+    
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        
+        let gameState = { currentLevel: 1, gameActive: false, draggedObject: null, dragOffset: { x: 0, y: 0 }, objects: [], particle: null, particleLauncher: null, collectionChamber: null, levelComplete: false };
+        
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        
+        class PhysicsObject {
+            constructor(type, x, y, width, height, properties = {}) {
+                this.type = type; this.x = x; this.y = y; this.width = width; this.height = height;
+                this.rotation = properties.rotation || 0; this.mass = properties.mass || 1;
+                this.color = properties.color || '#FF0080'; this.draggable = properties.draggable !== false;
+                this.isStatic = properties.isStatic || false;
+            }
+            
+            render(ctx) {
+                ctx.save();
+                ctx.translate(this.x + this.width/2, this.y + this.height/2);
+                ctx.rotate(this.rotation);
+                ctx.shadowColor = this.color; ctx.shadowBlur = 15;
+                
+                switch(this.type) {
+                    case 'ramp':
+                        const gradient1 = ctx.createLinearGradient(-this.width/2, -this.height/2, this.width/2, this.height/2);
+                        gradient1.addColorStop(0, '#FF0080'); gradient1.addColorStop(1, '#FF6600');
+                        ctx.fillStyle = gradient1; ctx.strokeStyle = '#FF0080'; ctx.lineWidth = 2;
+                        ctx.beginPath(); ctx.moveTo(-this.width/2, this.height/2); ctx.lineTo(this.width/2, this.height/2); ctx.lineTo(this.width/2, -this.height/2); ctx.closePath(); ctx.fill(); ctx.stroke();
+                        break;
+                    case 'block':
+                        const gradient2 = ctx.createLinearGradient(-this.width/2, -this.height/2, this.width/2, this.height/2);
+                        gradient2.addColorStop(0, '#666'); gradient2.addColorStop(1, '#999');
+                        ctx.fillStyle = gradient2; ctx.strokeStyle = '#999'; ctx.lineWidth = 2;
+                        ctx.fillRect(-this.width/2, -this.height/2, this.width, this.height); ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+                        break;
+                    case 'bouncy-pad':
+                        const gradient3 = ctx.createRadialGradient(0, 0, 0, 0, 0, this.width/2);
+                        gradient3.addColorStop(0, '#39FF14'); gradient3.addColorStop(1, '#00FFFF');
+                        ctx.fillStyle = gradient3; ctx.strokeStyle = '#39FF14'; ctx.lineWidth = 2;
+                        ctx.beginPath(); ctx.arc(0, 0, this.width/2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                        break;
+                    case 'launcher':
+                        ctx.fillStyle = '#FFFF00'; ctx.strokeStyle = '#FFFF00'; ctx.lineWidth = 3;
+                        ctx.beginPath(); ctx.arc(0, 0, this.width/2, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                        break;
+                    case 'chamber':
+                        ctx.fillStyle = '#39FF14'; ctx.strokeStyle = '#39FF14'; ctx.lineWidth = 3;
+                        ctx.fillRect(-this.width/2, -this.height/2, this.width, this.height); ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
+                        break;
+                }
+                ctx.restore();
+            }
+            
+            contains(x, y) { return x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height; }
+        }
+        
+        class Particle {
+            constructor(x, y) { this.x = x; this.y = y; this.vx = 0; this.vy = 0; this.radius = 6; this.active = true; this.trail = []; }
+            
+            update(deltaTime) {
+                if (!this.active) return;
+                this.vy += 300 * deltaTime; // gravity
+                this.x += this.vx * deltaTime; this.y += this.vy * deltaTime;
+                this.trail.push({ x: this.x, y: this.y, alpha: 1 });
+                if (this.trail.length > 10) this.trail.shift();
+                this.trail.forEach((point, index) => { point.alpha = index / this.trail.length; });
+                if (this.y > canvas.height + 50) this.active = false;
+            }
+            
+            render(ctx) {
+                if (!this.active) return;
+                this.trail.forEach((point, index) => {
+                    ctx.save(); ctx.globalAlpha = point.alpha * 0.5; ctx.fillStyle = '#FFFF00'; ctx.shadowColor = '#FFFF00'; ctx.shadowBlur = 10;
+                    ctx.beginPath(); ctx.arc(point.x, point.y, this.radius * (index / this.trail.length), 0, Math.PI * 2); ctx.fill(); ctx.restore();
+                });
+                ctx.save(); ctx.fillStyle = '#FFFF00'; ctx.shadowColor = '#FFFF00'; ctx.shadowBlur = 20;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+            }
+        }
+        
+        const levels = [
+            { name: "BASIC RAMP", objects: [{ type: 'ramp', x: 200, y: 300, width: 100, height: 50 }], launcher: { x: 50, y: 200 }, chamber: { x: 350, y: 350 }, hint: "Use the ramp to guide the particle!" },
+            { name: "BOUNCY CASTLE", objects: [{ type: 'bouncy-pad', x: 150, y: 300, width: 60, height: 60 }, { type: 'block', x: 250, y: 250, width: 80, height: 30 }], launcher: { x: 50, y: 350 }, chamber: { x: 350, y: 200 }, hint: "Bounce off the pad!" },
+            { name: "BLOCK PUZZLE", objects: [{ type: 'block', x: 150, y: 300, width: 80, height: 30 }, { type: 'block', x: 280, y: 250, width: 60, height: 40 }], launcher: { x: 50, y: 250 }, chamber: { x: 380, y: 350 }, hint: "Create a path with blocks!" }
+        ];
+        
+        function loadLevel(levelNumber) {
+            const level = levels[levelNumber - 1];
+            if (!level) return;
+            
+            gameState.objects = []; gameState.particle = null; gameState.levelComplete = false;
+            
+            level.objects.forEach(objData => {
+                const obj = new PhysicsObject(objData.type, objData.x, objData.y, objData.width, objData.height, objData);
+                gameState.objects.push(obj);
+            });
+            
+            gameState.particleLauncher = new PhysicsObject('launcher', level.launcher.x, level.launcher.y, 30, 30, { isStatic: true, draggable: false, color: '#FFFF00' });
+            gameState.collectionChamber = new PhysicsObject('chamber', level.chamber.x, level.chamber.y, 50, 50, { isStatic: true, draggable: false, color: '#39FF14' });
+            
+            document.getElementById('levelDisplay').textContent = `LEVEL ${levelNumber}: ${level.name}`;
+        }
+        
+        function launchParticle() {
+            if (gameState.particle && gameState.particle.active) return;
+            const launcher = gameState.particleLauncher;
+            gameState.particle = new Particle(launcher.x + launcher.width/2, launcher.y + launcher.height/2);
+            gameState.particle.vx = 100; gameState.particle.vy = -50;
+            gameState.gameActive = true;
+            gtag('event', 'particle_launched', { 'event_category': 'gameplay', 'level': gameState.currentLevel });
+        }
+        
+        function resetLevel() { loadLevel(gameState.currentLevel); gameState.gameActive = false; }
+        function nextLevel() { if (gameState.currentLevel < levels.length) { gameState.currentLevel++; loadLevel(gameState.currentLevel); } }
+        function showHint() { const level = levels[gameState.currentLevel - 1]; if (level && level.hint) alert(level.hint); }
+        
+        let isDragging = false;
+        
+        function getMousePos(event) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = event.clientX || (event.touches && event.touches[0] ? event.touches[0].clientX : 0);
+            const clientY = event.clientY || (event.touches && event.touches[0] ? event.touches[0].clientY : 0);
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+        
+        function handleStart(event) {
+            event.preventDefault(); const mousePos = getMousePos(event);
+            for (let obj of gameState.objects) {
+                if (obj.draggable && obj.contains(mousePos.x, mousePos.y)) {
+                    gameState.draggedObject = obj; gameState.dragOffset = { x: mousePos.x - obj.x, y: mousePos.y - obj.y };
+                    isDragging = true; break;
+                }
+            }
+        }
+        
+        function handleMove(event) {
+            event.preventDefault(); if (!isDragging || !gameState.draggedObject) return;
+            const mousePos = getMousePos(event);
+            gameState.draggedObject.x = mousePos.x - gameState.dragOffset.x;
+            gameState.draggedObject.y = mousePos.y - gameState.dragOffset.y;
+            gameState.draggedObject.x = Math.max(0, Math.min(canvas.width - gameState.draggedObject.width, gameState.draggedObject.x));
+            gameState.draggedObject.y = Math.max(0, Math.min(canvas.height - gameState.draggedObject.height, gameState.draggedObject.y));
+        }
+        
+        function handleEnd(event) { event.preventDefault(); isDragging = false; gameState.draggedObject = null; }
+        
+        canvas.addEventListener('mousedown', handleStart); canvas.addEventListener('mousemove', handleMove); canvas.addEventListener('mouseup', handleEnd);
+        canvas.addEventListener('touchstart', handleStart, { passive: false }); canvas.addEventListener('touchmove', handleMove, { passive: false }); canvas.addEventListener('touchend', handleEnd, { passive: false });
+        
+        let lastTime = 0;
+        function gameLoop(currentTime) {
+            const deltaTime = (currentTime - lastTime) / 1000; lastTime = currentTime;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (gameState.particle) {
+                gameState.particle.update(deltaTime);
+                if (gameState.particle.active) {
+                    const chamber = gameState.collectionChamber;
+                    const dx = gameState.particle.x - (chamber.x + chamber.width/2);
+                    const dy = gameState.particle.y - (chamber.y + chamber.height/2);
+                    const distance = Math.sqrt(dx*dx + dy*dy);
+                    if (distance < chamber.width/2 + gameState.particle.radius) levelComplete();
+                }
+            }
+            
+            if (gameState.particleLauncher) gameState.particleLauncher.render(ctx);
+            if (gameState.collectionChamber) gameState.collectionChamber.render(ctx);
+            gameState.objects.forEach(obj => obj.render(ctx));
+            if (gameState.particle) gameState.particle.render(ctx);
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function levelComplete() {
+            gameState.levelComplete = true; gameState.gameActive = false;
+            const chamber = gameState.collectionChamber; const explosion = document.createElement('div');
+            explosion.className = 'success-explosion';
+            explosion.style.left = (chamber.x + chamber.width/2 - 50) + 'px';
+            explosion.style.top = (chamber.y + chamber.height/2 - 50) + 'px';
+            document.querySelector('.lab-area').appendChild(explosion);
+            setTimeout(() => explosion.remove(), 600);
+            gtag('event', 'level_completed', { 'event_category': 'gameplay', 'level': gameState.currentLevel });
+            setTimeout(() => {
+                if (gameState.currentLevel < levels.length) nextLevel();
+                else alert('🎉 ¡Felicidades! ¡Has completado todos los experimentos!');
+            }, 1500);
+        }
+        
+        window.addEventListener('load', () => { resizeCanvas(); loadLevel(1); gameLoop(0); });
+        window.addEventListener('resize', resizeCanvas);
+    </script>
+    
+    <!-- AdSense Bottom -->
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4129506161314540" data-ad-slot="auto" data-ad-format="auto"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</body>
+</html>
