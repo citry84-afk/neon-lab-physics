@@ -13,7 +13,10 @@
             overflow: hidden;
         }
         canvas {
-            display: block;
+            max-width: 100vw;
+            max-height: 60vh;
+            width: auto;
+            height: auto;            display: block;
             margin: 20px auto;
             border: 2px solid #FF0080;
             background: #111;
@@ -37,7 +40,24 @@
             background: rgba(0,0,0,0.8);
             color: #00FFFF;
         }
-    </style>
+        @media (max-width: 768px) {
+            body { font-size: 14px; }
+            .info h1 { font-size: 1.5rem; }
+            .controls { padding: 10px; }
+            button { padding: 8px 15px; font-size: 12px; margin: 3px; }
+            canvas { 
+                width: 95vw !important;
+                height: 60vh !important;
+                max-width: 400px;
+                max-height: 600px;
+            }
+        }
+        @media (orientation: portrait) {
+            canvas {
+                width: 90vw !important;
+                height: 65vh !important;
+            }
+        }    </style>
 </head>
 <body>
     <div class="info">
@@ -46,7 +66,7 @@
         <p>ARRASTRA objetos, DOBLE TAP para rotar, presiona TEST</p>
     </div>
     
-    <canvas id="gameCanvas" width="800" height="500"></canvas>
+    <canvas id="gameCanvas" width="400" height="700"></canvas>
     
     <div class="controls">
         <button onclick="resetLevel()">🔄 RESET</button>
@@ -241,17 +261,17 @@
                 objects: [
                     { type: 'ramp', x: 200, y: 300, width: 100, height: 50, color: '#FF0080' }
                 ],
-                launcher: { x: 50, y: 200 },
-                chamber: { x: 600, y: 350 }
+                launcher: { x: 50, y: 100 },
+                chamber: { x: 300, y: 600 }
             },
             {
                 name: "BOUNCY",
                 objects: [
-                    { type: 'bouncy-pad', x: 150, y: 300, width: 60, height: 60, color: '#39FF14' },
-                    { type: 'block', x: 400, y: 250, width: 80, height: 30, color: '#00FFFF' }
+                    { type: 'bouncy-pad', x: 100, y: 250, width: 50, height: 50, color: '#39FF14' },
+                    { type: 'block', x: 200, y: 400, width: 70, height: 25, color: '#00FFFF' }
                 ],
-                launcher: { x: 50, y: 350 },
-                chamber: { x: 650, y: 200 }
+                launcher: { x: 50, y: 50 },
+                chamber: { x: 300, y: 550 }
             }
         ];
         
@@ -463,10 +483,34 @@ OBJECTS:
         // Initialize
         window.addEventListener('load', () => {
             console.log("🚀 Initializing Neon Lab...");
+            
+            // Responsive canvas sizing
+            function resizeCanvas() {
+                const container = canvas.parentElement;
+                const maxWidth = Math.min(400, window.innerWidth * 0.95);
+                const maxHeight = Math.min(700, window.innerHeight * 0.6);
+                
+                // Keep aspect ratio for vertical layout
+                if (window.innerWidth < 768 || window.orientation === 0) {
+                    canvas.width = maxWidth;
+                    canvas.height = maxHeight;
+                } else {
+                    canvas.width = 400;
+                    canvas.height = 700;
+                }
+                
+                console.log(`Canvas resized to: ${canvas.width}x${canvas.height}`);
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            window.addEventListener('orientationchange', () => {
+                setTimeout(resizeCanvas, 100);
+            });
+            
             loadLevel(1);
             requestAnimationFrame(gameLoop);
             console.log("✅ Neon Lab ready!");
-        });
-    </script>
+        });    </script>
 </body>
 </html>
