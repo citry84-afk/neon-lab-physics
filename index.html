@@ -224,7 +224,7 @@
     
     <div class="controls">
         <button onclick="resetLevel()">🔄 RESET</button>
-        <button onclick="launchParticle()">🚀 TEST</button>
+        <button onclick="launchParticle()">🚀 GO!</button>
         <button class="secondary" onclick="nextLevel()">➡️ NEXT</button>
         <button class="tertiary" onclick="showHelp()">❓ HELP</button>
     </div>
@@ -363,7 +363,10 @@
                 if (this.trail.length > 6) this.trail.shift();
                 
                 // Deactivate if falls off screen
-                if (this.y > canvas.height + 100) this.active = false;
+                if (this.y > canvas.height + 100) {
+                    this.active = false;
+                    loseLife(); // ¡PERDER VIDA!
+                }
             }
             
             collidesWith(obj) {
@@ -594,6 +597,14 @@
                 gameState.launcher.x + gameState.launcher.width/2,
                 gameState.launcher.y + gameState.launcher.height/2
             );
+            
+            // Timeout de 8 segundos - si no llega a la meta, perder vida
+            setTimeout(() => {
+                if (gameState.particle && gameState.particle.active) {
+                    gameState.particle.active = false;
+                    loseLife(); // ¡PERDER VIDA POR TIMEOUT!
+                }
+            }, 8000);
         }
         
         function resetLevel() { loadLevel(gameState.currentLevel); }
@@ -1006,23 +1017,5 @@ Objects:
         });
     </script>
     
-    <!-- Banner Ad (Non-intrusive) -->
-    <div style="position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: rgba(0,0,0,0.9); border-top: 1px solid #00FFFF; text-align: center; min-height: 50px; padding: 5px;">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-4129506161314540"
-             data-ad-slot="auto"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-    </div>
-    
-    <script>
-        // Initialize AdSense safely
-        try {
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        } catch (e) {
-            console.log("AdSense loading...");
-        }
-    </script>
 </body>
 </html>
