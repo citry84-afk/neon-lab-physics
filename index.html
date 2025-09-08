@@ -199,6 +199,7 @@
     <div class="header">
         <div class="title">�� NEON LAB</div>
         <div class="level-info" id="levelDisplay">LEVEL 1</div>
+        <div class="lives-display" id="livesDisplay">❤️❤️❤️</div>
     </div>
     
     <div class="instructions">
@@ -229,7 +230,9 @@
             launcher: null,
             chamber: null,
             draggedObject: null,
-            dragOffset: { x: 0, y: 0 }
+            dragOffset: { x: 0, y: 0 },
+            lives: 3,
+            maxLives: 3
         };
         
         let isDragging = false;
@@ -582,7 +585,91 @@
         }
         
         function resetLevel() { loadLevel(gameState.currentLevel); }
-        function showEpicVictory() {
+        function loseLife() {
+            gameState.lives--;
+            updateLivesDisplay();
+            
+            // Life lost sound
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {}
+            
+            if (gameState.lives <= 0) {
+                setTimeout(() => {
+                    showGameOver();
+                }, 1000);
+            } else {
+                setTimeout(() => {
+                    alert(`💔 ¡Experimento fallido! Te quedan ${gameState.lives} intentos.`);
+                }, 500);
+            }
+        }
+        
+        function updateLivesDisplay() {
+            const heartsDisplay = '❤️'.repeat(gameState.lives) + '🖤'.repeat(gameState.maxLives - gameState.lives);
+            document.getElementById('livesDisplay').textContent = heartsDisplay;
+        }
+        
+        function showGameOver() {
+            // Game Over modal
+            const modal = document.createElement('div');
+            modal.className = 'victory-message';
+            modal.style.background = 'linear-gradient(135deg, #FF0080, #8B0000)';
+            modal.innerHTML = `
+                🧪 ¡EXPERIMENTO FALLIDO! 💀<br>
+                <div style="font-size: 1rem; margin: 15px 0; color: #00FFFF;">
+                    Nivel alcanzado: ${gameState.currentLevel}<br>
+                    Has agotado todas tus vidas
+                </div>
+                <div style="margin: 20px 0;">
+                    <button onclick="shareTwitterGameOver()" style="background: #1DA1F2; color: white; border: none; padding: 8px 15px; margin: 5px; border-radius: 5px; cursor: pointer;">🐦 Twitter</button>
+                    <button onclick="shareWhatsAppGameOver()" style="background: #25D366; color: white; border: none; padding: 8px 15px; margin: 5px; border-radius: 5px; cursor: pointer;">📱 WhatsApp</button>
+                </div>
+                <div>
+                    <button onclick="watchAdToContinue()" style="background: #FF6600; color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-weight: bold;">📺 VER ANUNCIO</button>
+                    <button onclick="restartGame()" style="background: #00FFFF; color: black; border: none; padding: 12px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-weight: bold;">🔄 REINICIAR</button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Game over sound
+            setTimeout(() => {
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.type = 'sawtooth';
+                    oscillator.frequency.setValueAtTime(150, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 1);
+                    
+                    gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 1);
+                } catch (e) {}
+            }, 200);
+        }        function showEpicVictory() {
             const levelName = levels[gameState.currentLevel - 1]?.name || "EXPERIMENTO";
             
             // Screen flash
@@ -687,7 +774,38 @@
             }
         }
         
-        function showGameComplete() {
+        function shareTwitterGameOver() {
+            const message = `🧪 ¡He llegado al nivel ${gameState.currentLevel} en Neon Lab! ¿Puedes llegar más lejos en este puzzle de física? 🎮⚡`;
+            const url = window.location.href;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(url)}`, '_blank');
+        }
+        
+        function shareWhatsAppGameOver() {
+            const message = `🧪 ¡He llegado al nivel ${gameState.currentLevel} en Neon Lab! ¿Puedes llegar más lejos? Juega aquí: ${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        }
+        
+        function watchAdToContinue() {
+            // Simular anuncio rewarded
+            alert('¡Anuncio visto! Te damos 2 vidas extra.');
+            gameState.lives = Math.min(gameState.maxLives, gameState.lives + 2);
+            updateLivesDisplay();
+            
+            // Remove game over modal
+            const modal = document.querySelector('.victory-message');
+            if (modal) modal.remove();
+        }
+        
+        function restartGame() {
+            gameState.currentLevel = 1;
+            gameState.lives = gameState.maxLives;
+            updateLivesDisplay();
+            loadLevel(1);
+            updateLivesDisplay();            
+            // Remove game over modal
+            const modal = document.querySelector('.victory-message');
+            if (modal) modal.remove();
+        }        function showGameComplete() {
             const message = document.createElement('div');
             message.className = 'victory-message';
             message.innerHTML = `🏆 ¡TODOS LOS EXPERIMENTOS COMPLETADOS! 🏆<br><span style="font-size: 1rem; color: #39FF14;">¡Eres un científico genial!</span>`;
@@ -702,7 +820,7 @@
                 // Reset to level 1
                 gameState.currentLevel = 1;
                 loadLevel(1);
-            }, 4000);
+            updateLivesDisplay();            }, 4000);
         }        function nextLevel() {
             if (gameState.currentLevel < levels.length) {
                 gameState.currentLevel++;
@@ -867,7 +985,7 @@ Objects:
             document.addEventListener('click', initSimpleMusic, { once: true });
             document.addEventListener('touchstart', initSimpleMusic, { once: true });            resizeCanvas();
             loadLevel(1);
-            requestAnimationFrame(gameLoop);
+            updateLivesDisplay();            requestAnimationFrame(gameLoop);
             
             window.addEventListener('resize', () => {
                 resizeCanvas();
