@@ -41,7 +41,7 @@
         }
         
         .game-area {
-            height: calc(100vh - 140px);
+            height: calc(100vh - 150px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -85,6 +85,8 @@
         button:active { transform: scale(0.95); }
         
         @media (max-width: 768px) {
+            .game-area { height: calc(100vh - 160px) !important; }
+            .controls { position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000; }
             canvas {
                 width: 95vw !important;
                 height: auto !important;
@@ -340,7 +342,92 @@
                 ],
                 launcher: { x: 30, y: 50 },
                 chamber: { x: 270, y: 450 }
-            }
+            },
+            {
+                name: "DOUBLE RAMP",
+                objects: [
+                    { type: 'ramp', x: 80, y: 200, width: 60, height: 30, color: '#FF0080' },
+                    { type: 'ramp', x: 180, y: 300, width: 60, height: 30, color: '#FF0080' }
+                ],
+                launcher: { x: 40, y: 80 },
+                chamber: { x: 280, y: 420 }
+            },
+            {
+                name: "OBSTACLE",
+                objects: [
+                    { type: 'block', x: 120, y: 180, width: 80, height: 25, color: '#00FFFF' },
+                    { type: 'ramp', x: 90, y: 280, width: 70, height: 35, color: '#FF0080' },
+                    { type: 'block', x: 200, y: 350, width: 60, height: 20, color: '#00FFFF' }
+                ],
+                launcher: { x: 30, y: 60 },
+                chamber: { x: 290, y: 440 }
+            },
+            {
+                name: "BOUNCY MAZE",
+                objects: [
+                    { type: 'bouncy-pad', x: 80, y: 150, width: 35, height: 35, color: '#39FF14' },
+                    { type: 'block', x: 150, y: 200, width: 70, height: 20, color: '#00FFFF' },
+                    { type: 'bouncy-pad', x: 200, y: 300, width: 35, height: 35, color: '#39FF14' },
+                    { type: 'ramp', x: 120, y: 380, width: 60, height: 30, color: '#FF0080' }
+                ],
+                launcher: { x: 40, y: 80 },
+                chamber: { x: 270, y: 450 }
+            },
+            {
+                name: "PRECISION",
+                objects: [
+                    { type: 'block', x: 90, y: 160, width: 15, height: 80, color: '#00FFFF' },
+                    { type: 'block', x: 180, y: 200, width: 15, height: 120, color: '#00FFFF' },
+                    { type: 'ramp', x: 230, y: 350, width: 50, height: 25, color: '#FF0080' }
+                ],
+                launcher: { x: 50, y: 90 },
+                chamber: { x: 300, y: 420 }
+            },
+            {
+                name: "MULTI BOUNCE",
+                objects: [
+                    { type: 'bouncy-pad', x: 70, y: 180, width: 30, height: 30, color: '#39FF14' },
+                    { type: 'bouncy-pad', x: 140, y: 250, width: 30, height: 30, color: '#39FF14' },
+                    { type: 'bouncy-pad', x: 210, y: 180, width: 30, height: 30, color: '#39FF14' },
+                    { type: 'block', x: 170, y: 350, width: 50, height: 20, color: '#00FFFF' }
+                ],
+                launcher: { x: 30, y: 60 },
+                chamber: { x: 280, y: 440 }
+            },
+            {
+                name: "STAIRWAY",
+                objects: [
+                    { type: 'block', x: 70, y: 200, width: 40, height: 20, color: '#00FFFF' },
+                    { type: 'block', x: 120, y: 250, width: 40, height: 20, color: '#00FFFF' },
+                    { type: 'block', x: 170, y: 300, width: 40, height: 20, color: '#00FFFF' },
+                    { type: 'ramp', x: 220, y: 350, width: 50, height: 25, color: '#FF0080' }
+                ],
+                launcher: { x: 40, y: 100 },
+                chamber: { x: 290, y: 430 }
+            },
+            {
+                name: "FUNNEL",
+                objects: [
+                    { type: 'ramp', x: 60, y: 180, width: 50, height: 25, color: '#FF0080' },
+                    { type: 'ramp', x: 220, y: 180, width: 50, height: 25, color: '#FF0080' },
+                    { type: 'block', x: 120, y: 280, width: 80, height: 15, color: '#00FFFF' },
+                    { type: 'bouncy-pad', x: 150, y: 350, width: 30, height: 30, color: '#39FF14' }
+                ],
+                launcher: { x: 160, y: 60 },
+                chamber: { x: 160, y: 450 }
+            },
+            {
+                name: "CHAOS",
+                objects: [
+                    { type: 'bouncy-pad', x: 80, y: 150, width: 25, height: 25, color: '#39FF14' },
+                    { type: 'ramp', x: 130, y: 200, width: 40, height: 20, color: '#FF0080' },
+                    { type: 'block', x: 200, y: 160, width: 30, height: 15, color: '#00FFFF' },
+                    { type: 'bouncy-pad', x: 90, y: 300, width: 25, height: 25, color: '#39FF14' },
+                    { type: 'ramp', x: 180, y: 350, width: 40, height: 20, color: '#FF0080' },
+                    { type: 'block', x: 240, y: 280, width: 25, height: 40, color: '#00FFFF' }
+                ],
+                launcher: { x: 40, y: 80 },
+                chamber: { x: 290, y: 440 }            }
         ];
         
         function loadLevel(levelNumber) {
