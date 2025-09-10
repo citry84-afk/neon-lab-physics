@@ -206,8 +206,6 @@
             }
         }
     </style>
-    <!-- OPTIMIZACIONES PUZZLE VIRAL + RETENCIÓN + MONETIZACIÓN -->
-    <script src="neon-lab-puzzle-optimizations.js"></script>
 </head>
 <body>
     <div class="header">
@@ -226,8 +224,7 @@
     
     <div class="controls">
         <button onclick="resetLevel()">🔄 RESET</button>
-        <button onclick="showPuzzlePowerUpMenu()">⚡ POWER-UPS</button>
-        <button onclick="showPuzzleAchievements()">🏆 LOGROS</button>        <button onclick="launchParticle()">🚀 GO!</button>
+        <button onclick="launchParticle()">🚀 GO!</button>
         <button class="secondary" onclick="nextLevel()">➡️ NEXT</button>
         <button class="tertiary" onclick="showHelp()">❓ HELP</button>
     </div>
@@ -732,7 +729,7 @@
                 message.remove();
                 if (gameState.currentLevel < levels.length) {
                     gameState.currentLevel++;
-                    checkPuzzleAchievements();                    loadLevel(gameState.currentLevel);
+                    loadLevel(gameState.currentLevel);
                 } else {
                     // All levels completed!
                     showGameComplete();
@@ -1018,165 +1015,6 @@ Objects:
                 loadLevel(gameState.currentLevel);
             });
         });
-
-    // ========================================
-    // FUNCIONES DE POWER-UPS Y LOGROS PUZZLE
-    // ========================================
-
-    function showPuzzlePowerUpMenu() {
-        const modal = document.createElement("div");
-        modal.className = "puzzle-powerup-modal";
-        modal.innerHTML = `
-            <div class="puzzle-powerup-content">
-                <h3>⚡ Power-ups Puzzle Disponibles</h3>
-                <div class="puzzle-powerup-grid">
-                    <div class="puzzle-powerup-item">
-                        <h4>💡 Hint</h4>
-                        <p>Muestra una pista para resolver el puzzle</p>
-                        <div class="puzzle-powerup-actions">
-                            <span class="cost">💰 150</span>
-                            <button onclick="buyPuzzlePowerUp("hint")" class="btn">Comprar</button>
-                            <button onclick="showPuzzleRewardAd("hint", () => activatePuzzlePowerUp("hint"))" class="btn reward">🎬 Gratis</button>
-                        </div>
-                    </div>
-                    <div class="puzzle-powerup-item">
-                        <h4>↩️ Deshacer</h4>
-                        <p>Deshace el último movimiento</p>
-                        <div class="puzzle-powerup-actions">
-                            <span class="cost">💰 100</span>
-                            <button onclick="buyPuzzlePowerUp("undo")" class="btn">Comprar</button>
-                            <button onclick="showPuzzleRewardAd("undo", () => activatePuzzlePowerUp("undo"))" class="btn reward">🎬 Gratis</button>
-                        </div>
-                    </div>
-                    <div class="puzzle-powerup-item">
-                        <h4>🔄 Reiniciar</h4>
-                        <p>Reinicia el puzzle actual</p>
-                        <div class="puzzle-powerup-actions">
-                            <span class="cost">💰 200</span>
-                            <button onclick="buyPuzzlePowerUp("reset")" class="btn">Comprar</button>
-                            <button onclick="showPuzzleRewardAd("reset", () => activatePuzzlePowerUp("reset"))" class="btn reward">🎬 Gratis</button>
-                        </div>
-                    </div>
-                    <div class="puzzle-powerup-item">
-                        <h4>🎯 Solución</h4>
-                        <p>Muestra la solución completa</p>
-                        <div class="puzzle-powerup-actions">
-                            <span class="cost">💰 500</span>
-                            <button onclick="buyPuzzlePowerUp("solution")" class="btn">Comprar</button>
-                            <button onclick="showPuzzleRewardAd("solution", () => activatePuzzlePowerUp("solution"))" class="btn reward">🎬 Gratis</button>
-                        </div>
-                    </div>
-                    <div class="puzzle-powerup-item">
-                        <h4>⏰ Tiempo Extra</h4>
-                        <p>Añade 30 segundos al timer</p>
-                        <div class="puzzle-powerup-actions">
-                            <span class="cost">💰 300</span>
-                            <button onclick="buyPuzzlePowerUp("extraTime")" class="btn">Comprar</button>
-                            <button onclick="showPuzzleRewardAd("extraTime", () => activatePuzzlePowerUp("extraTime"))" class="btn reward">🎬 Gratis</button>
-                        </div>
-                    </div>
-                    <div class="puzzle-powerup-item">
-                        <h4>⏭️ Saltar</h4>
-                        <p>Salta al siguiente nivel</p>
-                        <div class="puzzle-powerup-actions">
-                            <span class="cost">💰 800</span>
-                            <button onclick="buyPuzzlePowerUp("skip")" class="btn">Comprar</button>
-                            <button onclick="showPuzzleRewardAd("skip", () => activatePuzzlePowerUp("skip"))" class="btn reward">🎬 Gratis</button>
-                        </div>
-                    </div>
-                </div>
-                <button onclick="closePuzzlePowerUpMenu()" class="close-btn">✕</button>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        setTimeout(() => modal.classList.add("show"), 100);
-    }
-
-    function showPuzzleAchievements() {
-        const modal = document.createElement("div");
-        modal.className = "puzzle-achievements-modal";
-        modal.innerHTML = `
-            <div class="puzzle-achievements-content">
-                <h3>🏆 Logros Puzzle</h3>
-                <div class="puzzle-achievements-list">
-                    ${Object.entries(puzzleAchievements).map(([key, achievement]) => `
-                        <div class="puzzle-achievement-item ${achievement.unlocked ? "unlocked" : "locked"}">
-                            <div class="puzzle-achievement-icon">${achievement.unlocked ? "🧪" : "🔒"}</div>
-                            <div class="puzzle-achievement-info">
-                                <h4>${achievement.name}</h4>
-                                <p>${achievement.description}</p>
-                                <span class="puzzle-reward">Recompensa: ${achievement.reward} monedas</span>
-                            </div>
-                        </div>
-                    `).join("")}
-                </div>
-                <button onclick="closePuzzleAchievements()" class="close-btn">✕</button>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        setTimeout(() => modal.classList.add("show"), 100);
-    }
-
-    function buyPuzzlePowerUp(powerUpType) {
-        const powerUp = puzzlePowerUps[powerUpType];
-        if (puzzleCoins >= powerUp.cost) {
-            puzzleCoins -= powerUp.cost;
-            localStorage.setItem("neonLabPuzzleCoins", puzzleCoins.toString());
-            updatePuzzleCoinsDisplay();
-            activatePuzzlePowerUp(powerUpType);
-            showPuzzleNotification(`¡${powerUp.name} comprado!`, "success");
-        } else {
-            showPuzzleNotification("No tienes suficientes monedas", "error");
-        }
-    }
-
-    function activatePuzzlePowerUp(powerUpType) {
-        const powerUp = puzzlePowerUps[powerUpType];
-        showPuzzleNotification(`${powerUp.name} activado!`, "success");
-        
-        // Implementar efectos del power-up puzzle
-        switch(powerUpType) {
-            case "hint":
-                // Mostrar hint
-                break;
-            case "undo":
-                // Deshacer último movimiento
-                break;
-            case "reset":
-                // Reiniciar puzzle
-                break;
-            case "solution":
-                // Mostrar solución
-                break;
-            case "extraTime":
-                // Añadir tiempo
-                break;
-            case "skip":
-                // Saltar nivel
-                break;
-        }
-    }
-
-    function closePuzzlePowerUpMenu() {
-        const modal = document.querySelector(".puzzle-powerup-modal");
-        if (modal) {
-            modal.classList.remove("show");
-            setTimeout(() => modal.remove(), 300);
-        }
-    }
-
-    function closePuzzleAchievements() {
-        const modal = document.querySelector(".puzzle-achievements-modal");
-        if (modal) {
-            modal.classList.remove("show");
-            setTimeout(() => modal.remove(), 300);
-        }
-    }
-
-    // Inicializar monedas puzzle al cargar
-    document.addEventListener("DOMContentLoaded", function() {
-        updatePuzzleCoinsDisplay();
-    });
     </script>
     
 </body>
