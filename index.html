@@ -32,6 +32,33 @@
             user-select: none;
             touch-action: manipulation;
         }
+
+        // Ads helpers (no invasivos)
+        function showAds() {
+            const top = document.getElementById('top-banner');
+            const bottom = document.getElementById('bottom-banner');
+            if (top) top.style.display = 'flex';
+            if (bottom) bottom.style.display = 'flex';
+            try {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            } catch(e) {}
+        }
+        function hideAds() {
+            const top = document.getElementById('top-banner');
+            const bottom = document.getElementById('bottom-banner');
+            if (top) top.style.display = 'none';
+            if (bottom) bottom.style.display = 'none';
+        }
+
+        // Inicialización segura de anuncios
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            } catch(e) {}
+            hideAds();
+        });
         .header {
             height: 50px;
             background: rgba(0,0,0,0.9);
@@ -210,6 +237,13 @@
     <script src="neon-lab-physics-fixes.js"></script>
 </head>
 <body>
+    <!-- Ads: ocultos durante el juego; visibles en game over -->
+    <div id="top-banner" style="position:fixed;top:0;left:0;width:100%;height:50px;background:rgba(0,0,0,0.9);z-index:9998;display:none;align-items:center;justify-content:center;border-bottom:2px solid #00FFFF;">
+        <ins class="adsbygoogle" style="display:block;width:320px;height:50px;" data-ad-client="ca-pub-4129506161314540" data-ad-slot="6673201053"></ins>
+    </div>
+    <div id="bottom-banner" style="position:fixed;bottom:0;left:0;width:100%;height:50px;background:rgba(0,0,0,0.9);z-index:9998;display:none;align-items:center;justify-content:center;border-top:2px solid #00FFFF;">
+        <ins class="adsbygoogle" style="display:block;width:320px;height:50px;" data-ad-client="ca-pub-4129506161314540" data-ad-slot="6673201053"></ins>
+    </div>
     <div class="header">
         <div class="title">�� NEON LAB</div>
         <div class="level-info" id="levelDisplay">LEVEL 1</div>
@@ -609,7 +643,7 @@
             }, 8000);
         }
         
-        function resetLevel() { loadLevel(gameState.currentLevel); }
+        function resetLevel() { loadLevel(gameState.currentLevel); hideAds(); }
         function loseLife() {
             gameState.lives--;
             updateLivesDisplay();
@@ -637,6 +671,7 @@
             if (gameState.lives <= 0) {
                 setTimeout(() => {
                     showGameOver();
+                    showAds();
                 }, 1000);
             } else {
                 setTimeout(() => {
