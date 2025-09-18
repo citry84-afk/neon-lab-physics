@@ -686,6 +686,13 @@
         }
         
         function showGameOver() {
+            // Track game over
+            gtag('event', 'game_over', { 
+                game_name: 'neon_lab_physics', 
+                level: gameState.currentLevel,
+                lives: gameState.lives
+            });
+            
             // Game Over modal
             const modal = document.createElement('div');
             modal.className = 'victory-message';
@@ -704,9 +711,21 @@
                     <button onclick="watchAdToContinue()" style="background: #FF6600; color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-weight: bold;">📺 VER ANUNCIO</button>
                     <button onclick="restartGame()" style="background: #00FFFF; color: black; border: none; padding: 12px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-weight: bold;">🔄 REINICIAR</button>
                 </div>
+                
+                <!-- Interstitial Ad Container -->
+                <div id="gameOverAd" style="margin-top: 20px; padding: 10px; background: rgba(0,0,0,0.8); border: 1px solid #00FFFF; border-radius: 8px;">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-4129506161314540"
+                         data-ad-slot="6673201053"
+                         data-ad-format="auto"></ins>
+                </div>
             `;
             
             document.body.appendChild(modal);
+            
+            // Show interstitial ad
+            showInterstitialAd();
             
             // Game over sound
             setTimeout(() => {
@@ -857,6 +876,9 @@
         }
         
         function restartGame() {
+            // Track game restart
+            gtag('event', 'game_restart', { game_name: 'neon_lab_physics' });
+            
             gameState.currentLevel = 1;
             gameState.lives = gameState.maxLives;
             updateLivesDisplay();
@@ -1003,7 +1025,20 @@ Objects:
             requestAnimationFrame(gameLoop);
         }
         
+        // Add missing functions
+        function showInterstitialAd() {
+            try {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                gtag('event', 'ad_impression', { game_name: 'neon_lab_physics' });
+            } catch (e) {
+                console.log('AdSense not loaded yet');
+            }
+        }
+
         window.addEventListener('load', () => {
+            // Track page view
+            gtag('event', 'page_view', { game_name: 'neon_lab_physics' });
+            
             // Simple background music
             let musicEnabled = false;
             
