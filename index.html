@@ -33,51 +33,6 @@
             touch-action: manipulation;
         }
 
-        // Ads helpers - ESTRATEGIA AGRESIVA PERO INTELIGENTE
-        function showAds() {
-            const top = document.getElementById('top-banner');
-            const bottom = document.getElementById('bottom-banner');
-            const side = document.getElementById('side-banner');
-            const menu = document.getElementById('menu-banner');
-            if (top) top.style.display = 'flex';
-            if (bottom) bottom.style.display = 'flex';
-            if (side) side.style.display = 'block';
-            if (menu) menu.style.display = 'block';
-        }
-        function hideAds() {
-            const top = document.getElementById('top-banner');
-            const bottom = document.getElementById('bottom-banner');
-            const side = document.getElementById('side-banner');
-            const menu = document.getElementById('menu-banner');
-            if (top) top.style.display = 'none';
-            if (bottom) bottom.style.display = 'none';
-            if (side) side.style.display = 'none';
-            if (menu) menu.style.display = 'none';
-        }
-        
-        // NUEVA ESTRATEGIA: Mostrar banners después de 30 segundos de juego
-        let gameStartTime = 0;
-        let bannerShown = false;
-        
-        function checkBannerDisplay() {
-            if (!gameState.gameActive || bannerShown) return;
-            
-            const gameTime = Date.now() - gameStartTime;
-            if (gameTime > 30000) { // 30 segundos
-                showAds();
-                bannerShown = true;
-                console.log('💰 Banners mostrados después de 30s de juego');
-            }
-        }
-        
-        // Mostrar banners en pausa (oportunidad de monetización)
-        function showPauseAds() {
-            if (gameState.paused) {
-                showAds();
-                console.log('💰 Banners mostrados durante pausa');
-            }
-        }
-
         // Inicialización segura de anuncios
         window.addEventListener('DOMContentLoaded', () => {
             hideAds();
@@ -1132,6 +1087,52 @@ Objects:
                 loadLevel(gameState.currentLevel);
             });
         });
+        
+        // Ads helpers - ESTRATEGIA AGRESIVA PERO INTELIGENTE
+        function showAds() {
+            const top = document.getElementById('top-banner');
+            const bottom = document.getElementById('bottom-banner');
+            const side = document.getElementById('side-banner');
+            const menu = document.getElementById('menu-banner');
+            if (top) top.style.display = 'flex';
+            if (bottom) bottom.style.display = 'flex';
+            if (side) side.style.display = 'block';
+            if (menu) menu.style.display = 'block';
+        }
+        
+        function hideAds() {
+            const top = document.getElementById('top-banner');
+            const bottom = document.getElementById('bottom-banner');
+            const side = document.getElementById('side-banner');
+            const menu = document.getElementById('menu-banner');
+            if (top) top.style.display = 'none';
+            if (bottom) bottom.style.display = 'none';
+            if (side) side.style.display = 'none';
+            if (menu) menu.style.display = 'none';
+        }
+        
+        // NUEVA ESTRATEGIA: Mostrar banners después de 30 segundos de juego
+        let gameStartTime = 0;
+        let bannerShown = false;
+        
+        function checkBannerDisplay() {
+            if (!gameState.gameActive || bannerShown) return;
+            
+            const gameTime = Date.now() - gameStartTime;
+            if (gameTime > 30000) { // 30 segundos
+                showAds();
+                bannerShown = true;
+                console.log('💰 Banners mostrados después de 30s de juego');
+            }
+        }
+        
+        // Mostrar banners en pausa (oportunidad de monetización)
+        function showPauseAds() {
+            if (gameState.paused) {
+                showAds();
+                console.log('💰 Banners mostrados durante pausa');
+            }
+        }
     </script>
     
 </body>
