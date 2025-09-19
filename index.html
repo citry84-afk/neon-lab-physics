@@ -43,12 +43,6 @@
             if (bottom) bottom.style.display = 'flex';
             if (side) side.style.display = 'block';
             if (menu) menu.style.display = 'block';
-            try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
-                (adsbygoogle = window.adsbygoogle || []).push({});
-                (adsbygoogle = window.adsbygoogle || []).push({});
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            } catch(e) {}
         }
         function hideAds() {
             const top = document.getElementById('top-banner');
@@ -86,10 +80,6 @@
 
         // Inicialización segura de anuncios
         window.addEventListener('DOMContentLoaded', () => {
-            try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            } catch(e) {}
             hideAds();
         });
         .header {
@@ -1084,7 +1074,6 @@ Objects:
         // Add missing functions
         function showInterstitialAd() {
             try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
                 gtag('event', 'ad_impression', { game_name: 'neon_lab_physics' });
             } catch (e) {
                 console.log('AdSense not loaded yet');
