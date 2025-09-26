@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Neon Lab - Physics Puzzle</title>
+    <title>Neon Lab Physics WOW - Ultra Realistic Physics Engine</title>
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-633RQLC6T0"></script>
@@ -12,53 +12,135 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-633RQLC6T0');
+        
+        window.trackDonationClick = function(amount = 'custom') {
+            gtag('event', 'donation_click', {
+                source: 'neon_lab_physics_wow',
+                amount: amount,
+                value: parseFloat(amount) || 1
+            });
+        };
     </script>
     
     <!-- AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4837743291717475" crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4837743291717475"
+         crossorigin="anonymous"></script>
+    <!-- Consent Mode v2 + Banner -->
+    <script defer src="/consent.js"></script>
     
     <!-- PWA Icons -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23FF0080'/%3E%3Cpath d='M8 8h16v8H8z' fill='%23FFFF00' stroke='%23FFFFFF'/%3E%3Ccircle cx='12' cy='24' r='3' fill='%2339FF14'/%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23FF0080'/%3E%3Cpath d='M40 40h40v40H40z' fill='%23FFFF00' stroke='%23FFFFFF' stroke-width='3'/%3E%3Ccircle cx='60' cy='120' r='12' fill='%2339FF14'/%3E%3Ctext x='90' y='110' font-family='monospace' font-size='24' fill='%2300FFFF'%3ELAB%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23FF0080'/%3E%3Cpath d='M40 40h40v40H40z' fill='%23FFFF00' stroke='%23FFFFFF' stroke-width='3'/%3E%3Ccircle cx='60' cy='120' r='12' fill='%2339FF14'/%3E%3Ctext x='90' y='110' font-family='monospace' font-size='24' fill='%2300FFFF'%3ELAB WOW%3C/text%3E%3C/svg%3E">
     <meta name="theme-color" content="#FF0080">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
         body {
-            font-family: monospace;
-            background: linear-gradient(135deg, #000 0%, #111 100%);
+            font-family: 'Orbitron', monospace;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0e3460 75%, #0a0a0a 100%);
             color: #00FFFF;
             overflow-x: hidden;
             user-select: none;
             touch-action: manipulation;
+            min-height: 100vh;
         }
 
-        // Inicialización segura de anuncios
-        window.addEventListener('DOMContentLoaded', () => {
-            hideAds();
-        });
+        .particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle-bg {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00FFFF;
+            border-radius: 50%;
+            animation: float 8s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            from { 
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+            }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            to { 
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
         .header {
-            height: 50px;
-            background: rgba(0,0,0,0.9);
-            border-bottom: 2px solid #00FFFF;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(20,20,40,0.9));
+            border-bottom: 3px solid #00FFFF;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 15px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
         }
-        .title { font-size: 1.5rem; font-weight: bold; color: #39FF14; }
-        .level-info { font-size: 0.9rem; }
+        
+        .title { 
+            font-size: 1.8rem; 
+            font-weight: 900; 
+            color: #39FF14;
+            text-shadow: 0 0 10px #39FF14;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14; }
+            to { text-shadow: 0 0 20px #39FF14, 0 0 30px #39FF14, 0 0 40px #39FF14; }
+        }
+        
+        .level-info { 
+            font-size: 1rem; 
+            color: #00FFFF;
+            text-shadow: 0 0 5px #00FFFF;
+        }
+        
+        .lives-display { 
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px #FF0080;
+        }
         
         .instructions {
-            background: rgba(0,0,0,0.8);
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(20,20,40,0.9));
             color: #00FFFF;
-            padding: 8px;
+            padding: 12px;
             text-align: center;
-            font-size: 11px;
+            font-size: 12px;
+            border-bottom: 2px solid #FF0080;
+            position: relative;
+            z-index: 10;
         }
         
         .game-area {
-            height: calc(100vh - 150px);
+            height: calc(100vh - 200px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -66,131 +148,133 @@
                 linear-gradient(90deg, transparent 49%, rgba(0, 255, 255, 0.05) 50%, transparent 51%),
                 linear-gradient(0deg, transparent 49%, rgba(0, 255, 255, 0.05) 50%, transparent 51%);
             background-size: 20px 20px;
+            position: relative;
+            overflow: hidden;
         }
-        
-        canvas {
-            border: 2px solid #FF0080;
-            box-shadow: 0 0 15px rgba(255, 0, 128, 0.3);
-            background: rgba(0, 0, 0, 0.3);
-            touch-action: none;
-        }
-        
-        .controls {
-            height: 80px;
-            background: rgba(0,0,0,0.9);
-            border-top: 2px solid #00FFFF;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            padding: 8px;
-        }
-        
-        button {
-            background: #FF0080;
-            color: white;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: monospace;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        button.secondary { background: #00FFFF; color: #000; }
-        button.tertiary { background: #666; }
-        button:active { transform: scale(0.95); }
-        
-        /* Epic Victory Effects */
-        .victory-explosion {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1500;
+
+        .game-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%);
             pointer-events: none;
         }
         
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: linear-gradient(45deg, #FF0080, #00FFFF, #39FF14, #FFFF00);
-            animation: confetti-fall 2s ease-in-out forwards;
+        canvas {
+            border: 3px solid #FF0080;
+            box-shadow: 
+                0 0 20px rgba(255, 0, 128, 0.5),
+                inset 0 0 20px rgba(0, 255, 255, 0.2);
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(20,20,40,0.8));
+            touch-action: none;
+            position: relative;
+            z-index: 5;
         }
         
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-100vh) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
+        .controls {
+            height: 100px;
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(20,20,40,0.9));
+            border-top: 3px solid #00FFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
         }
         
-        .sparks {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #FFFF00;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #FFFF00;
-            animation: spark-burst 1.5s ease-out forwards;
-        }
-        
-        @keyframes spark-burst {
-            0% {
-                transform: scale(1) translate(0, 0);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(0) translate(var(--spark-x, 0), var(--spark-y, 0));
-                opacity: 0;
-            }
-        }
-        
-        .victory-message {
-            position: fixed;
-            top: 30%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #FF0080, #00FFFF);
-            color: #FFFFFF;
-            padding: 20px 30px;
-            border-radius: 15px;
-            border: 3px solid #FFFF00;
-            font-size: 1.5rem;
+        button {
+            background: linear-gradient(45deg, #FF0080, #00FFFF);
+            border: 2px solid #FFFFFF;
+            color: #000;
+            padding: 12px 20px;
+            border-radius: 8px;
             font-weight: bold;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(255, 0, 128, 0.3);
+        }
+        
+        button:hover {
+            background: linear-gradient(45deg, #00FFFF, #FF0080);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.5);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .secondary {
+            background: linear-gradient(45deg, #39FF14, #FFFF00);
+            color: #000;
+        }
+        
+        .tertiary {
+            background: linear-gradient(45deg, #8A2BE2, #FF00FF);
+            color: #FFF;
+        }
+
+        .donation-section {
+            margin-top: 10px;
+        }
+
+        .donation-section h3 {
+            color: #FFFF00; 
+            margin-bottom: 10px; 
+            font-size: 12px;
             text-align: center;
-            z-index: 2000;
-            animation: victory-pop 0.8s ease-out;
-            box-shadow: 0 0 30px rgba(255, 255, 0, 0.8);
         }
-        
-        @keyframes victory-pop {
-            0% {
-                transform: translate(-50%, -50%) scale(0) rotate(180deg);
-                opacity: 0;
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(1.2) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1) rotate(0deg);
-                opacity: 1;
-            }
+
+        .donation-section div {
+            display: flex; 
+            gap: 8px; 
+            justify-content: center; 
+            flex-wrap: wrap;
         }
-        
-        .screen-flash {
-            position: fixed;
+
+        .donation-section a {
+            padding: 8px 12px; 
+            background: linear-gradient(45deg, #4CAF50, #8BC34A); 
+            color: white; 
+            font-weight: bold;
+            border-radius: 6px; 
+            text-decoration: none; 
+            font-size: 11px;
+            transition: all 0.3s ease;
+        }
+
+        .donation-section a:nth-child(2) {
+            background: linear-gradient(45deg, #FF9800, #FFC107);
+        }
+
+        .donation-section a:nth-child(3) {
+            background: linear-gradient(45deg, #E91E63, #F06292);
+        }
+
+        .donation-section a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .flash-effect {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 0, 0.3) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 0, 0.4) 0%, transparent 70%);
             z-index: 1000;
             animation: flash 0.5s ease-out;
             pointer-events: none;
@@ -200,67 +284,130 @@
             0% { opacity: 0; }
             50% { opacity: 1; }
             100% { opacity: 0; }
-        }        @media (max-width: 768px) {
-            .game-area { height: calc(100vh - 160px) !important; }
-            .controls { position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000; }
+        }
+
+        .impact-effect {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #FFFF00, transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 100;
+            animation: impact 0.3s ease-out;
+        }
+        
+        @keyframes impact {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+        
+        .trail-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00FFFF;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 50;
+            animation: trailFade 0.5s ease-out forwards;
+        }
+
+        @keyframes trailFade {
+            0% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .game-area { height: calc(100vh - 180px) !important; }
+            .controls { 
+            position: fixed;
+                bottom: 0; 
+            left: 0;
+                right: 0; 
+            z-index: 1000;
+                height: 80px;
+            }
             canvas {
                 width: 95vw !important;
                 height: auto !important;
                 max-width: 350px;
                 max-height: 60vh;
             }
+            .title { font-size: 1.4rem; }
+            button { padding: 10px 16px; font-size: 11px; }
         }
     </style>
-    <!-- FIXES CRÍTICOS NEON LAB v2.2 -->
-    <script src="neon-lab-physics-fixes.js"></script>
 </head>
 <body>
-    <!-- Ads: ocultos durante el juego; visibles en game over -->
+    <!-- Background Particles -->
+    <div class="particles-bg" id="particlesBg"></div>
+
+    <!-- Ads -->
     <div id="top-banner" style="position:fixed;top:0;left:0;width:100%;height:50px;background:rgba(0,0,0,0.9);z-index:9998;display:none;align-items:center;justify-content:center;border-bottom:2px solid #00FFFF;">
-        <ins class="adsbygoogle" style="display:block;width:320px;height:50px;" data-ad-client="ca-pub-4129506161314540" data-ad-slot="6673201053"></ins>
+        <ins class="adsbygoogle" style="display:block;width:320px;height:50px;" data-ad-client="ca-pub-4837743291717475" data-ad-slot="6673201053"></ins>
     </div>
     <div id="bottom-banner" style="position:fixed;bottom:0;left:0;width:100%;height:50px;background:rgba(0,0,0,0.9);z-index:9998;display:none;align-items:center;justify-content:center;border-top:2px solid #00FFFF;">
-        <ins class="adsbygoogle" style="display:block;width:320px;height:50px;" data-ad-client="ca-pub-4129506161314540" data-ad-slot="6673201053"></ins>
+        <ins class="adsbygoogle" style="display:block;width:320px;height:50px;" data-ad-client="ca-pub-4837743291717475" data-ad-slot="6673201053"></ins>
     </div>
     
-    <!-- Banner lateral para móviles (más agresivo) -->
     <div id="side-banner" style="position:fixed; right:10px; top:50%; transform:translateY(-50%); width:120px; height:600px; background:rgba(0,0,0,0.8); border:1px solid #00FFFF; border-radius:8px; display:none; z-index:1000;">
         <ins class="adsbygoogle" 
              style="display:block;width:120px;height:600px;" 
-             data-ad-client="ca-pub-4129506161314540" 
+             data-ad-client="ca-pub-4837743291717475" 
              data-ad-slot="6673201053"></ins>
     </div>
+
     <div class="header">
-        <div class="title">�� NEON LAB</div>
+        <div class="title">🧪 NEON LAB PHYSICS WOW</div>
         <div class="level-info" id="levelDisplay">LEVEL 1</div>
         <div class="lives-display" id="livesDisplay">❤️❤️❤️</div>
     </div>
     
-    <!-- Banner en header del juego -->
     <div id="menu-banner" style="margin: 10px 0; padding: 10px; background: rgba(0,0,0,0.8); border: 1px solid #00FFFF; border-radius: 8px; text-align: center;">
         <ins class="adsbygoogle" 
              style="display:block;width:320px;height:50px;" 
-             data-ad-client="ca-pub-4129506161314540" 
+             data-ad-client="ca-pub-4837743291717475" 
              data-ad-slot="6673201053"></ins>
     </div>
     
     <div class="instructions">
-        🎯 ARRASTRA objetos, DOBLE TAP para rotar, presiona TEST
+        🎯 ARRASTRA objetos, DOBLE TAP para rotar, presiona LAUNCH para lanzar
     </div>
     
     <div class="game-area">
-        <canvas id="gameCanvas" width="350" height="500"></canvas>
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
     </div>
     
     <div class="controls">
         <button onclick="resetLevel()">🔄 RESET</button>
-        <button onclick="launchParticle()">🚀 GO!</button>
+        <button onclick="launchParticle()">🚀 LAUNCH</button>
         <button class="secondary" onclick="nextLevel()">➡️ NEXT</button>
         <button class="tertiary" onclick="showHelp()">❓ HELP</button>
+        <div class="donation-section">
+            <h3>💖 ¡Apoya el desarrollo!</h3>
+            <div>
+                <a href="https://paypal.me/lipastudios/0.50" target="_blank" onclick="trackDonationClick('0.50')">☕ 0,50€</a>
+                <a href="https://paypal.me/lipastudios/2.00" target="_blank" onclick="trackDonationClick('2.00')">🍕 2€</a>
+                <a href="https://paypal.me/lipastudios/5.00" target="_blank" onclick="trackDonationClick('5.00')">🎮 5€</a>
+            </div>
+        </div>
     </div>
 
     <script>
-        console.log("🧪 NEON LAB - FIXED VERSION");
+        console.log("🧪 NEON LAB PHYSICS WOW - ULTRA REALISTIC VERSION");
         
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -274,24 +421,41 @@
             draggedObject: null,
             dragOffset: { x: 0, y: 0 },
             lives: 3,
-            maxLives: 3
+            maxLives: 3,
+            score: 0,
+            effects: [],
+            particles: []
         };
         
         let isDragging = false;
         let lastTapTime = 0;
         let tapTarget = null;
         let lastTime = 0;
+        let animationId = null;
+        
+        // Initialize background particles
+        function initBackgroundParticles() {
+            const container = document.getElementById('particlesBg');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle-bg';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+                container.appendChild(particle);
+            }
+        }
         
         // Responsive canvas
         function resizeCanvas() {
             if (window.innerWidth < 768) {
-                const maxWidth = Math.min(350, window.innerWidth - 20);
-                const maxHeight = Math.min(500, window.innerHeight * 0.6);
+                const maxWidth = Math.min(400, window.innerWidth - 20);
+                const maxHeight = Math.min(600, window.innerHeight * 0.6);
                 canvas.width = maxWidth;
                 canvas.height = maxHeight;
             } else {
-                canvas.width = 350;
-                canvas.height = 500;
+                canvas.width = 400;
+                canvas.height = 600;
             }
         }
         
@@ -305,6 +469,13 @@
                 this.color = color;
                 this.rotation = 0;
                 this.draggable = type !== 'launcher' && type !== 'chamber';
+                this.glowIntensity = 0;
+                this.pulsePhase = 0;
+            }
+            
+            update(deltaTime) {
+                this.pulsePhase += deltaTime * 3;
+                this.glowIntensity = Math.sin(this.pulsePhase) * 0.3 + 0.7;
             }
             
             render(ctx) {
@@ -312,14 +483,20 @@
                 ctx.translate(this.x + this.width/2, this.y + this.height/2);
                 ctx.rotate(this.rotation);
                 
-                ctx.fillStyle = this.color;
-                ctx.strokeStyle = this.color;
-                ctx.lineWidth = 2;
+                // Enhanced glow effect
                 ctx.shadowColor = this.color;
-                ctx.shadowBlur = 8;
+                ctx.shadowBlur = 15 * this.glowIntensity;
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = this.color;
+                ctx.fillStyle = this.color;
                 
                 if (this.type === 'ramp') {
-                    // Triangle
+                    // Enhanced triangle with gradient
+                    const gradient = ctx.createLinearGradient(-this.width/2, -this.height/2, this.width/2, this.height/2);
+                    gradient.addColorStop(0, this.color);
+                    gradient.addColorStop(1, this.color + '80');
+                    
+                    ctx.fillStyle = gradient;
                     ctx.beginPath();
                     ctx.moveTo(-this.width/2, this.height/2);
                     ctx.lineTo(this.width/2, this.height/2);
@@ -328,13 +505,23 @@
                     ctx.fill();
                     ctx.stroke();
                 } else if (this.type === 'bouncy-pad') {
-                    // Circle
+                    // Enhanced circle with radial gradient
+                    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.width/2);
+                    gradient.addColorStop(0, this.color);
+                    gradient.addColorStop(1, this.color + '60');
+                    
+                    ctx.fillStyle = gradient;
                     ctx.beginPath();
                     ctx.arc(0, 0, this.width/2, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.stroke();
                 } else {
-                    // Rectangle
+                    // Enhanced rectangle with gradient
+                    const gradient = ctx.createLinearGradient(-this.width/2, -this.height/2, this.width/2, this.height/2);
+                    gradient.addColorStop(0, this.color);
+                    gradient.addColorStop(1, this.color + '80');
+                    
+                    ctx.fillStyle = gradient;
                     ctx.fillRect(-this.width/2, -this.height/2, this.width, this.height);
                     ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
                 }
@@ -352,23 +539,45 @@
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.vx = 120;
-                this.vy = -80;
-                this.radius = 5;
+                this.vx = 150;
+                this.vy = -100;
+                this.radius = 6;
                 this.active = true;
                 this.trail = [];
                 this.bounces = 0;
+                this.energy = 1.0;
+                this.glowPhase = 0;
+                this.sparkles = [];
             }
             
             update(deltaTime) {
                 if (!this.active) return;
                 
-                // Gravity
-                this.vy += 350 * deltaTime;
+                this.glowPhase += deltaTime * 10;
+                
+                // Enhanced gravity with air resistance
+                this.vy += 400 * deltaTime;
+                this.vx *= 0.999; // Air resistance
                 
                 // Update position
                 this.x += this.vx * deltaTime;
                 this.y += this.vy * deltaTime;
+                
+                // Create sparkles
+                if (Math.random() < 0.3) {
+                    this.sparkles.push({
+                        x: this.x + (Math.random() - 0.5) * 20,
+                        y: this.y + (Math.random() - 0.5) * 20,
+                        life: 0.5,
+                        maxLife: 0.5
+                    });
+                }
+                
+                // Update sparkles
+                this.sparkles = this.sparkles.filter(sparkle => {
+                    sparkle.life -= deltaTime;
+                    return sparkle.life > 0;
+                });
                 
                 // Check collisions
                 for (let obj of gameState.objects) {
@@ -378,29 +587,46 @@
                     }
                 }
                 
-                // Boundary collisions
+                // Boundary collisions with enhanced effects
                 if (this.x <= this.radius || this.x >= canvas.width - this.radius) {
-                    this.vx = -this.vx * 0.8;
+                    this.vx = -this.vx * 0.85;
                     this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
+                    this.createImpactEffect(this.x, this.y);
                 }
                 if (this.y <= this.radius) {
-                    this.vy = Math.abs(this.vy) * 0.8;
+                    this.vy = Math.abs(this.vy) * 0.85;
                     this.y = this.radius;
+                    this.createImpactEffect(this.x, this.y);
                 }
                 
                 // Update trail
-                this.trail.push({ x: this.x, y: this.y });
-                if (this.trail.length > 6) this.trail.shift();
+                this.trail.push({ x: this.x, y: this.y, life: 1.0 });
+                this.trail.forEach(point => point.life -= deltaTime * 2);
+                this.trail = this.trail.filter(point => point.life > 0);
                 
                 // Deactivate if falls off screen
                 if (this.y > canvas.height + 100) {
                     this.active = false;
-                    loseLife(); // ¡PERDER VIDA!
+                    loseLife();
+                }
+                
+                // Energy loss over time
+                this.energy -= deltaTime * 0.1;
+                if (this.energy <= 0) {
+                    this.active = false;
                 }
             }
             
+            createImpactEffect(x, y) {
+                const effect = document.createElement('div');
+                effect.className = 'impact-effect';
+                effect.style.left = x + 'px';
+                effect.style.top = y + 'px';
+                document.body.appendChild(effect);
+                setTimeout(() => effect.remove(), 300);
+            }
+            
             collidesWith(obj) {
-                // Circle vs Rectangle collision
                 const closestX = Math.max(obj.x, Math.min(this.x, obj.x + obj.width));
                 const closestY = Math.max(obj.y, Math.min(this.y, obj.y + obj.height));
                 
@@ -411,7 +637,6 @@
             }
             
             handleCollision(obj) {
-                // Calculate collision normal
                 const centerX = obj.x + obj.width / 2;
                 const centerY = obj.y + obj.height / 2;
                 
@@ -428,12 +653,12 @@
                 this.x = centerX + normalX * (obj.width/2 + this.radius + 1);
                 this.y = centerY + normalY * (obj.height/2 + this.radius + 1);
                 
-                // Bounce
-                const elasticity = obj.type === 'bouncy-pad' ? 1.3 : 0.75;
+                // Enhanced bounce with energy loss
+                const elasticity = obj.type === 'bouncy-pad' ? 1.2 : 0.8;
                 const dot = this.vx * normalX + this.vy * normalY;
                 
-                this.vx -= 2 * dot * normalX * elasticity;
-                this.vy -= 2 * dot * normalY * elasticity;
+                this.vx -= 2 * dot * normalX * elasticity * this.energy;
+                this.vy -= 2 * dot * normalY * elasticity * this.energy;
                 
                 // Ramp behavior
                 if (obj.type === 'ramp') {
@@ -444,696 +669,339 @@
                 }
                 
                 this.bounces++;
+                this.createImpactEffect(this.x, this.y);
+                
+                // Add screen shake for big impacts
+                if (this.bounces % 3 === 0) {
+                    document.body.style.animation = 'shake 0.1s ease-in-out';
+                    setTimeout(() => document.body.style.animation = '', 100);
+                }
             }
             
             render(ctx) {
                 if (!this.active) return;
                 
-                // Trail
+                // Enhanced trail with fading
                 this.trail.forEach((point, index) => {
+                    const alpha = point.life * (index + 1) / this.trail.length;
                     ctx.save();
-                    ctx.globalAlpha = (index + 1) / this.trail.length * 0.6;
+                    ctx.globalAlpha = alpha * 0.8;
                     ctx.fillStyle = '#FFFF00';
+                    ctx.shadowColor = '#FFFF00';
+                    ctx.shadowBlur = 10;
                     ctx.beginPath();
-                    ctx.arc(point.x, point.y, this.radius * ((index + 1) / this.trail.length), 0, Math.PI * 2);
+                    ctx.arc(point.x, point.y, this.radius * alpha, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.restore();
                 });
                 
-                // Main particle
+                // Main particle with enhanced glow
                 ctx.save();
-                ctx.fillStyle = '#FFFF00';
                 ctx.shadowColor = '#FFFF00';
-                ctx.shadowBlur = 12;
+                ctx.shadowBlur = 20 * this.energy;
+                ctx.fillStyle = '#FFFF00';
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, this.radius * this.energy, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Inner core
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 0.5 * this.energy, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.restore();
+                
+                // Render sparkles
+                this.sparkles.forEach(sparkle => {
+                    ctx.save();
+                    ctx.globalAlpha = sparkle.life / sparkle.maxLife;
+                    ctx.fillStyle = '#00FFFF';
+                    ctx.shadowColor = '#00FFFF';
+                    ctx.shadowBlur = 5;
+                    ctx.beginPath();
+                    ctx.arc(sparkle.x, sparkle.y, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                });
             }
         }
         
+        // Enhanced level definitions
         const levels = [
             {
-                name: "TUTORIAL",
+                name: "Tutorial",
                 objects: [
-                    { type: 'ramp', x: 130, y: 250, width: 70, height: 35, color: '#FF0080' }
+                    { type: 'ramp', x: 200, y: 400, width: 80, height: 60, color: '#FF0080' },
+                    { type: 'bouncy-pad', x: 150, y: 300, width: 40, height: 40, color: '#39FF14' }
                 ],
-                launcher: { x: 50, y: 100 },
-                chamber: { x: 250, y: 420 }
+                target: { x: 300, y: 500, radius: 30 }
             },
             {
-                name: "BOUNCY",
+                name: "Bounce House",
                 objects: [
-                    { type: 'bouncy-pad', x: 100, y: 200, width: 40, height: 40, color: '#39FF14' },
-                    { type: 'block', x: 200, y: 300, width: 60, height: 20, color: '#00FFFF' }
+                    { type: 'bouncy-pad', x: 100, y: 200, width: 50, height: 50, color: '#39FF14' },
+                    { type: 'bouncy-pad', x: 250, y: 300, width: 50, height: 50, color: '#39FF14' },
+                    { type: 'ramp', x: 150, y: 400, width: 100, height: 80, color: '#FF0080' }
                 ],
-                launcher: { x: 30, y: 50 },
-                chamber: { x: 270, y: 450 }
+                target: { x: 350, y: 500, radius: 30 }
             },
             {
-                name: "DOUBLE RAMP",
+                name: "Gravity Maze",
                 objects: [
-                    { type: 'ramp', x: 80, y: 200, width: 60, height: 30, color: '#FF0080' },
-                    { type: 'ramp', x: 180, y: 300, width: 60, height: 30, color: '#FF0080' }
+                    { type: 'block', x: 50, y: 150, width: 60, height: 20, color: '#00FFFF' },
+                    { type: 'block', x: 150, y: 200, width: 60, height: 20, color: '#00FFFF' },
+                    { type: 'block', x: 250, y: 250, width: 60, height: 20, color: '#00FFFF' },
+                    { type: 'ramp', x: 100, y: 350, width: 120, height: 100, color: '#FF0080' }
                 ],
-                launcher: { x: 40, y: 80 },
-                chamber: { x: 280, y: 420 }
-            },
-            {
-                name: "OBSTACLE",
-                objects: [
-                    { type: 'block', x: 120, y: 180, width: 80, height: 25, color: '#00FFFF' },
-                    { type: 'ramp', x: 90, y: 280, width: 70, height: 35, color: '#FF0080' },
-                    { type: 'block', x: 200, y: 350, width: 60, height: 20, color: '#00FFFF' }
-                ],
-                launcher: { x: 30, y: 60 },
-                chamber: { x: 290, y: 440 }
-            },
-            {
-                name: "BOUNCY MAZE",
-                objects: [
-                    { type: 'bouncy-pad', x: 80, y: 150, width: 35, height: 35, color: '#39FF14' },
-                    { type: 'block', x: 150, y: 200, width: 70, height: 20, color: '#00FFFF' },
-                    { type: 'bouncy-pad', x: 200, y: 300, width: 35, height: 35, color: '#39FF14' },
-                    { type: 'ramp', x: 120, y: 380, width: 60, height: 30, color: '#FF0080' }
-                ],
-                launcher: { x: 40, y: 80 },
-                chamber: { x: 270, y: 450 }
-            },
-            {
-                name: "PRECISION",
-                objects: [
-                    { type: 'block', x: 90, y: 160, width: 15, height: 80, color: '#00FFFF' },
-                    { type: 'block', x: 180, y: 200, width: 15, height: 120, color: '#00FFFF' },
-                    { type: 'ramp', x: 230, y: 350, width: 50, height: 25, color: '#FF0080' }
-                ],
-                launcher: { x: 50, y: 90 },
-                chamber: { x: 300, y: 420 }
-            },
-            {
-                name: "MULTI BOUNCE",
-                objects: [
-                    { type: 'bouncy-pad', x: 70, y: 180, width: 30, height: 30, color: '#39FF14' },
-                    { type: 'bouncy-pad', x: 140, y: 250, width: 30, height: 30, color: '#39FF14' },
-                    { type: 'bouncy-pad', x: 210, y: 180, width: 30, height: 30, color: '#39FF14' },
-                    { type: 'block', x: 170, y: 350, width: 50, height: 20, color: '#00FFFF' }
-                ],
-                launcher: { x: 30, y: 60 },
-                chamber: { x: 280, y: 440 }
-            },
-            {
-                name: "STAIRWAY",
-                objects: [
-                    { type: 'block', x: 70, y: 200, width: 40, height: 20, color: '#00FFFF' },
-                    { type: 'block', x: 120, y: 250, width: 40, height: 20, color: '#00FFFF' },
-                    { type: 'block', x: 170, y: 300, width: 40, height: 20, color: '#00FFFF' },
-                    { type: 'ramp', x: 220, y: 350, width: 50, height: 25, color: '#FF0080' }
-                ],
-                launcher: { x: 40, y: 100 },
-                chamber: { x: 290, y: 430 }
-            },
-            {
-                name: "FUNNEL",
-                objects: [
-                    { type: 'ramp', x: 60, y: 180, width: 50, height: 25, color: '#FF0080' },
-                    { type: 'ramp', x: 220, y: 180, width: 50, height: 25, color: '#FF0080' },
-                    { type: 'block', x: 120, y: 280, width: 80, height: 15, color: '#00FFFF' },
-                    { type: 'bouncy-pad', x: 150, y: 350, width: 30, height: 30, color: '#39FF14' }
-                ],
-                launcher: { x: 160, y: 60 },
-                chamber: { x: 160, y: 450 }
-            },
-            {
-                name: "CHAOS",
-                objects: [
-                    { type: 'bouncy-pad', x: 80, y: 150, width: 25, height: 25, color: '#39FF14' },
-                    { type: 'ramp', x: 130, y: 200, width: 40, height: 20, color: '#FF0080' },
-                    { type: 'block', x: 200, y: 160, width: 30, height: 15, color: '#00FFFF' },
-                    { type: 'bouncy-pad', x: 90, y: 300, width: 25, height: 25, color: '#39FF14' },
-                    { type: 'ramp', x: 180, y: 350, width: 40, height: 20, color: '#FF0080' },
-                    { type: 'block', x: 240, y: 280, width: 25, height: 40, color: '#00FFFF' }
-                ],
-                launcher: { x: 40, y: 80 },
-                chamber: { x: 290, y: 440 }            }
+                target: { x: 200, y: 500, radius: 30 }
+            }
         ];
         
-        function loadLevel(levelNumber) {
-            const level = levels[levelNumber - 1];
-            if (!level) return;
-            
-            // Reset banner strategy
-            bannerShown = false;
-            gameStartTime = Date.now();
-            
+        function initLevel(levelIndex) {
+            gameState.currentLevel = levelIndex + 1;
             gameState.objects = [];
             gameState.particle = null;
+            gameState.effects = [];
+            gameState.particles = [];
             
-            // Scale for canvas size
-            const scaleX = canvas.width / 350;
-            const scaleY = canvas.height / 500;
-            
+            const level = levels[levelIndex];
             level.objects.forEach(objData => {
-                gameState.objects.push(new GameObject(
+                const obj = new GameObject(
                     objData.type,
-                    objData.x * scaleX,
-                    objData.y * scaleY,
-                    objData.width * scaleX,
-                    objData.height * scaleY,
+                    objData.x, 
+                    objData.y, 
+                    objData.width, 
+                    objData.height, 
                     objData.color
-                ));
+                );
+                gameState.objects.push(obj);
             });
             
-            gameState.launcher = new GameObject(
-                'launcher',
-                level.launcher.x * scaleX,
-                level.launcher.y * scaleY,
-                20 * scaleX,
-                20 * scaleY,
-                '#FFFF00'
-            );
+            // Create launcher
+            gameState.launcher = new GameObject('launcher', 50, canvas.height - 100, 30, 30, '#FFFF00');
+            gameState.objects.push(gameState.launcher);
             
-            gameState.chamber = new GameObject(
-                'chamber',
-                level.chamber.x * scaleX,
-                level.chamber.y * scaleY,
-                30 * scaleX,
-                30 * scaleY,
-                '#39FF14'
-            );
+            // Create target chamber
+            gameState.chamber = new GameObject('chamber', level.target.x - level.target.radius, level.target.y - level.target.radius, level.target.radius * 2, level.target.radius * 2, '#FF0080');
+            gameState.objects.push(gameState.chamber);
             
-            document.getElementById('levelDisplay').textContent = `LEVEL ${levelNumber}: ${level.name}`;
+            updateUI();
+        }
+        
+        function updateUI() {
+            document.getElementById('levelDisplay').textContent = `LEVEL ${gameState.currentLevel}`;
+            document.getElementById('livesDisplay').textContent = '❤️'.repeat(gameState.lives);
         }
         
         function launchParticle() {
             if (gameState.particle && gameState.particle.active) return;
             
-            gameState.particle = new Particle(
-                gameState.launcher.x + gameState.launcher.width/2,
-                gameState.launcher.y + gameState.launcher.height/2
-            );
+            gameState.particle = new Particle(gameState.launcher.x + 15, gameState.launcher.y + 15);
             
-            // Timeout de 8 segundos - si no llega a la meta, perder vida
-            setTimeout(() => {
-                if (gameState.particle && gameState.particle.active) {
-                    gameState.particle.active = false;
-                    loseLife(); // ¡PERDER VIDA POR TIMEOUT!
-                }
-            }, 8000);
+            // Add launch effect
+            const effect = document.createElement('div');
+            effect.className = 'flash-effect';
+            document.body.appendChild(effect);
+            setTimeout(() => effect.remove(), 500);
         }
         
-        function resetLevel() { loadLevel(gameState.currentLevel); hideAds(); }
+        function resetLevel() {
+            initLevel(gameState.currentLevel - 1);
+        }
+        
+        function nextLevel() {
+                if (gameState.currentLevel < levels.length) {
+                initLevel(gameState.currentLevel);
+                } else {
+                alert('🎉 ¡Felicidades! Has completado todos los niveles!');
+            }
+        }
+        
         function loseLife() {
             gameState.lives--;
-            updateLivesDisplay();
-            
-            // Life lost sound
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.type = 'sawtooth';
-                oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
-                oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.5);
-            } catch (e) {}
+            updateUI();
             
             if (gameState.lives <= 0) {
-                setTimeout(() => {
-                    showGameOver();
-                    showAds();
-                }, 1000);
-            } else {
-                setTimeout(() => {
-                    alert(`💔 ¡Experimento fallido! Te quedan ${gameState.lives} intentos.`);
-                }, 500);
+                alert('💀 Game Over! Inténtalo de nuevo.');
+                gameState.lives = gameState.maxLives;
+                initLevel(0);
             }
         }
         
-        function updateLivesDisplay() {
-            const heartsDisplay = '❤️'.repeat(gameState.lives) + '🖤'.repeat(gameState.maxLives - gameState.lives);
-            document.getElementById('livesDisplay').textContent = heartsDisplay;
+        function showHelp() {
+            alert(`🧪 NEON LAB PHYSICS WOW - AYUDA
+
+🎯 OBJETIVO: Lanza la partícula para que llegue a la cámara roja
+
+🎮 CONTROLES:
+• Arrastra objetos para moverlos
+• Doble tap para rotar objetos
+• Presiona LAUNCH para lanzar
+
+🔧 OBJETOS:
+• 🟡 LAUNCHER: Punto de lanzamiento
+• 🔴 TARGET: Objetivo a alcanzar
+• 🔺 RAMP: Rampa que desvía la partícula
+• 🟢 BOUNCY PAD: Superficie elástica
+• 🔵 BLOCK: Bloque sólido
+
+¡Usa la física realista para resolver cada puzzle!`);
         }
         
-        function showGameOver() {
-            // Track game over
-            gtag('event', 'game_over', { 
-                game_name: 'neon_lab_physics', 
-                level: gameState.currentLevel,
-                lives: gameState.lives
+        function gameLoop(currentTime) {
+            const deltaTime = (currentTime - lastTime) / 1000;
+            lastTime = currentTime;
+            
+            // Clear canvas with enhanced background
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and render objects
+            gameState.objects.forEach(obj => {
+                obj.update(deltaTime);
+                obj.render(ctx);
             });
             
-            // Game Over modal
-            const modal = document.createElement('div');
-            modal.className = 'victory-message';
-            modal.style.background = 'linear-gradient(135deg, #FF0080, #8B0000)';
-            modal.innerHTML = `
-                🧪 ¡EXPERIMENTO FALLIDO! 💀<br>
-                <div style="font-size: 1rem; margin: 15px 0; color: #00FFFF;">
-                    Nivel alcanzado: ${gameState.currentLevel}<br>
-                    Has agotado todas tus vidas
-                </div>
-                <div style="margin: 20px 0;">
-                    <button onclick="shareTwitterGameOver()" style="background: #1DA1F2; color: white; border: none; padding: 8px 15px; margin: 5px; border-radius: 5px; cursor: pointer;">🐦 Twitter</button>
-                    <button onclick="shareWhatsAppGameOver()" style="background: #25D366; color: white; border: none; padding: 8px 15px; margin: 5px; border-radius: 5px; cursor: pointer;">📱 WhatsApp</button>
-                </div>
-                <div>
-                    <button onclick="watchAdToContinue()" style="background: #FF6600; color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-weight: bold;">📺 VER ANUNCIO</button>
-                    <button onclick="restartGame()" style="background: #00FFFF; color: black; border: none; padding: 12px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-weight: bold;">🔄 REINICIAR</button>
-                </div>
+            // Update and render particle
+            if (gameState.particle) {
+                gameState.particle.update(deltaTime);
+                gameState.particle.render(ctx);
                 
-                <!-- Interstitial Ad Container -->
-                <div id="gameOverAd" style="margin-top: 20px; padding: 10px; background: rgba(0,0,0,0.8); border: 1px solid #00FFFF; border-radius: 8px;">
-                    <ins class="adsbygoogle"
-                         style="display:block"
-                         data-ad-client="ca-pub-4129506161314540"
-                         data-ad-slot="6673201053"
-                         data-ad-format="auto"></ins>
-                </div>
-            `;
+                // Check if particle reached target
+                if (gameState.particle.active && gameState.chamber) {
+                    const dx = gameState.particle.x - (gameState.chamber.x + gameState.chamber.width/2);
+                    const dy = gameState.particle.y - (gameState.chamber.y + gameState.chamber.height/2);
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < gameState.chamber.width/2) {
+                        // Level completed!
+                        gameState.particle.active = false;
+                        gameState.score += 100;
+                        
+                        // Celebration effect
+                        for (let i = 0; i < 20; i++) {
+                            const sparkle = document.createElement('div');
+                            sparkle.className = 'trail-particle';
+                            sparkle.style.left = (gameState.chamber.x + gameState.chamber.width/2) + 'px';
+                            sparkle.style.top = (gameState.chamber.y + gameState.chamber.height/2) + 'px';
+                            sparkle.style.background = ['#FF0080', '#00FFFF', '#39FF14', '#FFFF00'][Math.floor(Math.random() * 4)];
+                            document.body.appendChild(sparkle);
+                            setTimeout(() => sparkle.remove(), 500);
+                        }
             
-            document.body.appendChild(modal);
-            
-            // Show interstitial ad
-            showInterstitialAd();
-            
-            // Game over sound
             setTimeout(() => {
-                try {
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.type = 'sawtooth';
-                    oscillator.frequency.setValueAtTime(150, audioContext.currentTime);
-                    oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 1);
-                    
-                    gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1);
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.start();
-                    oscillator.stop(audioContext.currentTime + 1);
-                } catch (e) {}
-            }, 200);
-        }        function showEpicVictory() {
-            const levelName = levels[gameState.currentLevel - 1]?.name || "EXPERIMENTO";
-            
-            // Screen flash
-            const flash = document.createElement('div');
-            flash.className = 'screen-flash';
-            document.body.appendChild(flash);
-            setTimeout(() => flash.remove(), 500);
-            
-            // Victory message
-            const message = document.createElement('div');
-            message.className = 'victory-message';
-            message.innerHTML = `🧪 ¡${levelName} COMPLETADO! 🎉<br><span style="font-size: 1rem; color: #39FF14;">¡Experimento exitoso!</span>`;
-            document.body.appendChild(message);
-            
-            // Confetti explosion
-            createConfetti();
-            
-            // Sparks burst
-            createSparks();
-            
-            // Victory sound
-            setTimeout(() => {
-                const oscillator = createSimpleOscillator();
-                if (oscillator) {
-                    oscillator.frequency.setValueAtTime(523, oscillator.context.currentTime); // C5
-                    oscillator.frequency.exponentialRampToValueAtTime(1047, oscillator.context.currentTime + 0.5); // C6
-                    oscillator.start();
-                    oscillator.stop(oscillator.context.currentTime + 0.5);
+                            nextLevel();
+                        }, 1000);
+                    }
                 }
-            }, 100);
-            
-            // Auto advance to next level
-            setTimeout(() => {
-                message.remove();
-                if (gameState.currentLevel < levels.length) {
-                    gameState.currentLevel++;
-                    loadLevel(gameState.currentLevel);
-                } else {
-                    // All levels completed!
-                    showGameComplete();
-                }
-            }, 2500);
-        }
-        
-        function createConfetti() {
-            const colors = ['#FF0080', '#00FFFF', '#39FF14', '#FFFF00', '#FF6600'];
-            
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.left = Math.random() * 100 + '%';
-                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
-                    confetti.style.animationDuration = (1.5 + Math.random()) + 's';
-                    document.body.appendChild(confetti);
-                    
-                    setTimeout(() => confetti.remove(), 3000);
-                }, i * 50);
             }
-        }
-        
-        function createSparks() {
-            for (let i = 0; i < 15; i++) {
-                setTimeout(() => {
-                    const spark = document.createElement('div');
-                    spark.className = 'sparks';
-                    spark.style.left = '50%';
-                    spark.style.top = '50%';
-                    
-                    const angle = (Math.PI * 2 * i) / 15;
-                    const distance = 100 + Math.random() * 100;
-                    const x = Math.cos(angle) * distance;
-                    const y = Math.sin(angle) * distance;
-                    
-                    spark.style.setProperty('--spark-x', x + 'px');
-                    spark.style.setProperty('--spark-y', y + 'px');
-                    
-                    document.body.appendChild(spark);
-                    
-                    setTimeout(() => spark.remove(), 1500);
-                }, i * 30);
-            }
-        }
-        
-        function createSimpleOscillator() {
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.type = 'sine';
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                return oscillator;
-            } catch (e) {
-                return null;
-            }
-        }
-        
-        function shareTwitterGameOver() {
-            const message = `🧪 ¡He llegado al nivel ${gameState.currentLevel} en Neon Lab! ¿Puedes llegar más lejos en este puzzle de física? 🎮⚡`;
-            const url = window.location.href;
-            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(url)}`, '_blank');
-        }
-        
-        function shareWhatsAppGameOver() {
-            const message = `🧪 ¡He llegado al nivel ${gameState.currentLevel} en Neon Lab! ¿Puedes llegar más lejos? Juega aquí: ${window.location.href}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-        }
-        
-        function watchAdToContinue() {
-            // Simular anuncio rewarded
-            alert('¡Anuncio visto! Te damos 2 vidas extra.');
-            gameState.lives = Math.min(gameState.maxLives, gameState.lives + 2);
-            updateLivesDisplay();
             
-            // Remove game over modal
-            const modal = document.querySelector('.victory-message');
-            if (modal) modal.remove();
+            animationId = requestAnimationFrame(gameLoop);
         }
         
-        function restartGame() {
-            // Track game restart
-            gtag('event', 'game_restart', { game_name: 'neon_lab_physics' });
-            
-            gameState.currentLevel = 1;
-            gameState.lives = gameState.maxLives;
-            updateLivesDisplay();
-            loadLevel(1);
-            updateLivesDisplay();            
-            // Remove game over modal
-            const modal = document.querySelector('.victory-message');
-            if (modal) modal.remove();
-        }        function showGameComplete() {
-            const message = document.createElement('div');
-            message.className = 'victory-message';
-            message.innerHTML = `🏆 ¡TODOS LOS EXPERIMENTOS COMPLETADOS! 🏆<br><span style="font-size: 1rem; color: #39FF14;">¡Eres un científico genial!</span>`;
-            message.style.fontSize = '1.2rem';
-            document.body.appendChild(message);
-            
-            createConfetti();
-            createConfetti(); // Double confetti!
-            
-            setTimeout(() => {
-                message.remove();
-                // Reset to level 1
-                gameState.currentLevel = 1;
-                loadLevel(1);
-            updateLivesDisplay();            }, 4000);
-        }        function nextLevel() {
-            if (gameState.currentLevel < levels.length) {
-                gameState.currentLevel++;
-                loadLevel(gameState.currentLevel);
-            }
-        }
-        function showHelp() {
-            alert(`🧪 NEON LAB HELP:
-            
-• DRAG objects to move
-• DOUBLE TAP to rotate  
-• TEST to launch particle
-• Guide to green target
-
-Objects:
-📐 Ramps redirect particle
-🟦 Blocks are obstacles
-🟢 Bouncy pads boost`);
-        }
-        
-        // Touch/Mouse handling
-        function getPos(event) {
+        // Event listeners
+        canvas.addEventListener('mousedown', (e) => {
             const rect = canvas.getBoundingClientRect();
-            const x = (event.clientX || event.touches[0].clientX) - rect.left;
-            const y = (event.clientY || event.touches[0].clientY) - rect.top;
-            return {
-                x: x * (canvas.width / rect.width),
-                y: y * (canvas.height / rect.height)
-            };
-        }
-        
-        function handleStart(event) {
-            event.preventDefault();
-            const pos = getPos(event);
-            const now = Date.now();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
             
             for (let obj of gameState.objects) {
-                if (obj.draggable && obj.contains(pos.x, pos.y)) {
-                    if (tapTarget === obj && now - lastTapTime < 300) {
-                        obj.rotation += Math.PI / 4;
-                        return;
-                    }
-                    
+                if (obj.draggable && obj.contains(x, y)) {
                     gameState.draggedObject = obj;
-                    gameState.dragOffset = { x: pos.x - obj.x, y: pos.y - obj.y };
+                    gameState.dragOffset = { x: x - obj.x, y: y - obj.y };
                     isDragging = true;
-                    tapTarget = obj;
-                    lastTapTime = now;
                     break;
                 }
             }
-        }
-        
-        function handleMove(event) {
-            if (!isDragging) return;
-            event.preventDefault();
-            
-            const pos = getPos(event);
-            gameState.draggedObject.x = pos.x - gameState.dragOffset.x;
-            gameState.draggedObject.y = pos.y - gameState.dragOffset.y;
-            
-            // Keep in bounds
-            gameState.draggedObject.x = Math.max(0, Math.min(canvas.width - gameState.draggedObject.width, gameState.draggedObject.x));
-            gameState.draggedObject.y = Math.max(0, Math.min(canvas.height - gameState.draggedObject.height, gameState.draggedObject.y));
-        }
-        
-        function handleEnd(event) {
-            event.preventDefault();
-            isDragging = false;
-            gameState.draggedObject = null;
-        }
-        
-        canvas.addEventListener('mousedown', handleStart);
-        canvas.addEventListener('mousemove', handleMove);
-        canvas.addEventListener('mouseup', handleEnd);
-        canvas.addEventListener('touchstart', handleStart);
-        canvas.addEventListener('touchmove', handleMove);
-        canvas.addEventListener('touchend', handleEnd);
-        
-        function gameLoop(time) {
-            const deltaTime = Math.min((time - lastTime) / 1000, 0.016);
-            lastTime = time;
-            
-            // Verificar si mostrar banners después de 30s
-            checkBannerDisplay();
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Update particle
-            if (gameState.particle) {
-                gameState.particle.update(deltaTime);
-                
-                // Win check
-                if (gameState.particle.active) {
-                    const dx = gameState.particle.x - (gameState.chamber.x + gameState.chamber.width/2);
-                    const dy = gameState.particle.y - (gameState.chamber.y + gameState.chamber.height/2);
-                    if (Math.sqrt(dx*dx + dy*dy) < 20) {
-                        gameState.particle.active = false;
-                        setTimeout(() => {
-                            showEpicVictory();
-                        }, 300);                    }
-                }
-            }
-            
-            // Render
-            gameState.launcher.render(ctx);
-            gameState.chamber.render(ctx);
-            gameState.objects.forEach(obj => obj.render(ctx));
-            if (gameState.particle) gameState.particle.render(ctx);
-            
-            // Tutorial arrow
-            if (gameState.currentLevel === 1 && !gameState.particle) {
-                ctx.save();
-                ctx.strokeStyle = "#FFFF00";
-                ctx.setLineDash([5, 5]);
-                ctx.beginPath();
-                ctx.moveTo(gameState.launcher.x + 15, gameState.launcher.y + 15);
-                ctx.lineTo(gameState.chamber.x + 15, gameState.chamber.y);
-                ctx.stroke();
-                ctx.restore();
-            }
-            
-            requestAnimationFrame(gameLoop);
-        }
-        
-        // Add missing functions
-        function showInterstitialAd() {
-            try {
-                gtag('event', 'ad_impression', { game_name: 'neon_lab_physics' });
-            } catch (e) {
-                console.log('AdSense not loaded yet');
-            }
-        }
-
-        window.addEventListener('load', () => {
-            // Track page view
-            gtag('event', 'page_view', { game_name: 'neon_lab_physics' });
-            
-            // Simple background music
-            let musicEnabled = false;
-            
-            function initSimpleMusic() {
-                if (musicEnabled) return;
-                musicEnabled = true;
-                
-                const playBgNote = () => {
-                    if (!musicEnabled) return;
-                    
-                    try {
-                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                        const oscillator = audioContext.createOscillator();
-                        const gainNode = audioContext.createGain();
-                        
-                        const melody = [261, 294, 329, 349, 392, 329, 261]; // C4-D4-E4-F4-G4-E4-C4
-                        const noteIndex = Math.floor(Date.now() / 800) % melody.length;
-                        
-                        oscillator.type = 'square';
-                        oscillator.frequency.setValueAtTime(melody[noteIndex], audioContext.currentTime);
-                        
-                        gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
-                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
-                        
-                        oscillator.connect(gainNode);
-                        gainNode.connect(audioContext.destination);
-                        
-                        oscillator.start();
-                        oscillator.stop(audioContext.currentTime + 0.3);
-                    } catch (e) {}
-                    
-                    setTimeout(playBgNote, 800);
-                };
-                
-                setTimeout(playBgNote, 1000);
-            }
-            
-            // Start music on first user interaction
-            document.addEventListener('click', initSimpleMusic, { once: true });
-            document.addEventListener('touchstart', initSimpleMusic, { once: true });            resizeCanvas();
-            loadLevel(1);
-            updateLivesDisplay();            requestAnimationFrame(gameLoop);
-            
-            window.addEventListener('resize', () => {
-                resizeCanvas();
-                loadLevel(gameState.currentLevel);
-            });
         });
         
-        // Ads helpers - ESTRATEGIA AGRESIVA PERO INTELIGENTE
-        function showAds() {
-            const top = document.getElementById('top-banner');
-            const bottom = document.getElementById('bottom-banner');
-            const side = document.getElementById('side-banner');
-            const menu = document.getElementById('menu-banner');
-            if (top) top.style.display = 'flex';
-            if (bottom) bottom.style.display = 'flex';
-            if (side) side.style.display = 'block';
-            if (menu) menu.style.display = 'block';
-        }
-        
-        function hideAds() {
-            const top = document.getElementById('top-banner');
-            const bottom = document.getElementById('bottom-banner');
-            const side = document.getElementById('side-banner');
-            const menu = document.getElementById('menu-banner');
-            if (top) top.style.display = 'none';
-            if (bottom) bottom.style.display = 'none';
-            if (side) side.style.display = 'none';
-            if (menu) menu.style.display = 'none';
-        }
-        
-        // NUEVA ESTRATEGIA: Mostrar banners después de 30 segundos de juego
-        let gameStartTime = 0;
-        let bannerShown = false;
-        
-        function checkBannerDisplay() {
-            if (!gameState.gameActive || bannerShown) return;
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDragging || !gameState.draggedObject) return;
             
-            const gameTime = Date.now() - gameStartTime;
-            if (gameTime > 30000) { // 30 segundos
-                showAds();
-                bannerShown = true;
-                console.log('💰 Banners mostrados después de 30s de juego');
-            }
-        }
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            gameState.draggedObject.x = x - gameState.dragOffset.x;
+            gameState.draggedObject.y = y - gameState.dragOffset.y;
+        });
         
-        // Mostrar banners en pausa (oportunidad de monetización)
-        function showPauseAds() {
-            if (gameState.paused) {
-                showAds();
-                console.log('💰 Banners mostrados durante pausa');
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            gameState.draggedObject = null;
+        });
+        
+        // Touch events
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            const currentTime = Date.now();
+            if (currentTime - lastTapTime < 300) {
+                // Double tap - rotate object
+                for (let obj of gameState.objects) {
+                    if (obj.draggable && obj.contains(x, y)) {
+                        obj.rotation += Math.PI / 4;
+                        break;
+                    }
+                }
             }
-        }
+            lastTapTime = currentTime;
+            
+            for (let obj of gameState.objects) {
+                if (obj.draggable && obj.contains(x, y)) {
+                    gameState.draggedObject = obj;
+                    gameState.dragOffset = { x: x - obj.x, y: y - obj.y };
+                    isDragging = true;
+                    break;
+                }
+            }
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isDragging || !gameState.draggedObject) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            gameState.draggedObject.x = x - gameState.dragOffset.x;
+            gameState.draggedObject.y = y - gameState.dragOffset.y;
+        });
+        
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            isDragging = false;
+            gameState.draggedObject = null;
+        });
+        
+        // Initialize game
+        window.addEventListener('load', () => {
+                resizeCanvas();
+            initBackgroundParticles();
+            initLevel(0);
+            lastTime = performance.now();
+            gameLoop(lastTime);
+        });
+        
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Add shake animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-2px); }
+                75% { transform: translateX(2px); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
-    
 </body>
 </html>
