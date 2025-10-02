@@ -27,6 +27,8 @@
          crossorigin="anonymous"></script>
     <!-- Consent Mode v2 + Banner -->
     <script defer src="/consent.js"></script>
+    <!-- Leaderboard System -->
+    <script src="/leaderboard-global.js"></script>
     
     <!-- PWA Icons -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23FF0080'/%3E%3Cpath d='M8 8h16v8H8z' fill='%23FFFF00' stroke='%23FFFFFF'/%3E%3Ccircle cx='12' cy='24' r='3' fill='%2339FF14'/%3E%3C/svg%3E">
@@ -140,10 +142,11 @@
         }
         
         .game-area {
-            height: calc(100vh - 200px);
+            height: calc(100vh - 180px);
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            padding-top: 20px;
             background: 
                 linear-gradient(90deg, transparent 49%, rgba(0, 255, 255, 0.05) 50%, transparent 51%),
                 linear-gradient(0deg, transparent 49%, rgba(0, 255, 255, 0.05) 50%, transparent 51%);
@@ -177,14 +180,14 @@
         }
         
         .controls {
-            height: 100px;
+            height: 80px;
             background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(20,20,40,0.9));
             border-top: 3px solid #00FFFF;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
-            padding: 12px;
+            gap: 8px;
+            padding: 8px;
             position: relative;
             z-index: 10;
             box-shadow: 0 0 20px rgba(0,255,255,0.3);
@@ -331,23 +334,48 @@
         }
         
         @media (max-width: 768px) {
-            .game-area { height: calc(100vh - 180px) !important; }
+            .game-area { 
+                height: calc(100vh - 130px) !important; 
+                padding-top: 3px;
+            }
             .controls { 
             position: fixed;
                 bottom: 0; 
             left: 0;
                 right: 0; 
             z-index: 1000;
-                height: 80px;
+                height: 50px;
+                gap: 3px;
+                padding: 3px;
             }
             canvas {
-                width: 95vw !important;
+                width: 90vw !important;
                 height: auto !important;
-                max-width: 350px;
-                max-height: 60vh;
+                max-width: 320px;
+                max-height: 50vh;
             }
-            .title { font-size: 1.4rem; }
-            button { padding: 10px 16px; font-size: 11px; }
+            .title { font-size: 1rem; }
+            button { 
+                padding: 4px 8px; 
+                font-size: 8px; 
+            font-weight: bold;
+                border-width: 1px;
+            }
+            .donation-section {
+                margin-top: 2px;
+            }
+            .donation-section h3 {
+                font-size: 8px;
+                margin-bottom: 2px;
+            }
+            .donation-section a {
+                padding: 3px 6px;
+                font-size: 7px;
+            }
+            .instructions {
+                font-size: 9px;
+                padding: 6px;
+            }
         }
     </style>
 </head>
@@ -384,7 +412,7 @@
     </div>
     
     <div class="instructions">
-        🎯 ARRASTRA objetos, DOBLE TAP para rotar, presiona LAUNCH para lanzar
+        🎯 ARRASTRA objetos para crear el camino, DOBLE TAP para rotar, LAUNCH para soltar la partícula
     </div>
     
     <div class="game-area">
@@ -393,9 +421,10 @@
     
     <div class="controls">
         <button onclick="resetLevel()">🔄 RESET</button>
-        <button onclick="launchParticle()">🚀 LAUNCH</button>
+        <button onclick="launchParticle()">⬇️ DROP</button>
         <button class="secondary" onclick="nextLevel()">➡️ NEXT</button>
         <button class="tertiary" onclick="showHelp()">❓ HELP</button>
+        <button onclick="showLeaderboard('neon-lab-physics-wow')" style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000;">🏆 RANKING</button>
         <div class="donation-section">
             <h3>💖 ¡Apoya el desarrollo!</h3>
             <div>
@@ -424,7 +453,9 @@
             maxLives: 3,
             score: 0,
             effects: [],
-            particles: []
+            particles: [],
+            levelCompleted: false,
+            gameOver: false
         };
         
         let isDragging = false;
@@ -432,6 +463,63 @@
         let tapTarget = null;
         let lastTime = 0;
         let animationId = null;
+        
+        // Audio context for sounds
+        let audioContext = null;
+        let sounds = {};
+        
+        // Initialize audio
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        // Create sound effects
+        function createSound(frequency, duration, type = 'sine') {
+            if (!audioContext) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            oscillator.type = type;
+            
+            // Envelope
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+        
+        // Sound effects
+        function playBounceSound() {
+            const frequencies = [200, 300, 400, 500];
+            const randomFreq = frequencies[Math.floor(Math.random() * frequencies.length)];
+            createSound(randomFreq, 0.1, 'square');
+        }
+        
+        function playLaunchSound() {
+            createSound(600, 0.3, 'sine');
+            setTimeout(() => createSound(800, 0.2, 'sine'), 100);
+        }
+        
+        function playVictorySound() {
+            // Victory melody
+            const melody = [523, 659, 784, 1047]; // C, E, G, C
+            melody.forEach((freq, index) => {
+                setTimeout(() => createSound(freq, 0.3, 'sine'), index * 150);
+            });
+        }
+        
+        function playRotateSound() {
+            createSound(400, 0.1, 'triangle');
+        }
         
         // Initialize background particles
         function initBackgroundParticles() {
@@ -449,8 +537,8 @@
         // Responsive canvas
         function resizeCanvas() {
             if (window.innerWidth < 768) {
-                const maxWidth = Math.min(400, window.innerWidth - 20);
-                const maxHeight = Math.min(600, window.innerHeight * 0.6);
+                const maxWidth = Math.min(320, window.innerWidth - 20);
+                const maxHeight = Math.min(450, window.innerHeight * 0.5);
                 canvas.width = maxWidth;
                 canvas.height = maxHeight;
             } else {
@@ -471,6 +559,8 @@
                 this.draggable = type !== 'launcher' && type !== 'chamber';
                 this.glowIntensity = 0;
                 this.pulsePhase = 0;
+                this.isLauncher = type === 'launcher';
+                this.isTarget = type === 'chamber';
             }
             
             update(deltaTime) {
@@ -490,7 +580,70 @@
                 ctx.strokeStyle = this.color;
                 ctx.fillStyle = this.color;
                 
-                if (this.type === 'ramp') {
+                if (this.isLauncher) {
+                    // LAUNCHER - Clear start indicator
+                    ctx.fillStyle = '#FFFF00';
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 4;
+                    ctx.shadowColor = '#FFFF00';
+                    ctx.shadowBlur = 20;
+                    
+                    // Draw launcher as a circle with arrow
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.width/2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // Draw arrow pointing down
+                    ctx.fillStyle = '#000000';
+                    ctx.shadowBlur = 0;
+                    ctx.beginPath();
+                    ctx.moveTo(0, -this.width/4);
+                    ctx.lineTo(-this.width/6, this.width/6);
+                    ctx.lineTo(this.width/6, this.width/6);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Draw "START" text
+                    ctx.fillStyle = '#000000';
+                    ctx.font = 'bold 8px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('START', 0, -this.width/2 - 10);
+                    
+                } else if (this.isTarget) {
+                    // TARGET - Clear end indicator
+                    ctx.fillStyle = '#FF0080';
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 4;
+                    ctx.shadowColor = '#FF0080';
+                    ctx.shadowBlur = 20;
+                    
+                    // Draw target as a circle with bullseye
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.width/2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    // Draw inner circle
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.shadowBlur = 0;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.width/3, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Draw center dot
+                    ctx.fillStyle = '#FF0080';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.width/6, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Draw "GOAL" text
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.font = 'bold 8px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('GOAL', 0, this.width/2 + 15);
+                    
+                } else if (this.type === 'ramp') {
                     // Enhanced triangle with gradient
                     const gradient = ctx.createLinearGradient(-this.width/2, -this.height/2, this.width/2, this.height/2);
                     gradient.addColorStop(0, this.color);
@@ -539,43 +692,53 @@
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.vx = 150;
-                this.vy = -100;
-                this.radius = 6;
+                this.vx = 0; // No initial horizontal velocity - pure gravity
+                this.vy = 0; // No initial vertical velocity - pure gravity
+                this.radius = 8;
                 this.active = true;
                 this.trail = [];
                 this.bounces = 0;
                 this.energy = 1.0;
                 this.glowPhase = 0;
                 this.sparkles = [];
+                this.spin = 0;
+                this.spinSpeed = 0;
+                this.lastCollisionTime = 0;
             }
             
             update(deltaTime) {
                 if (!this.active) return;
                 
-                this.glowPhase += deltaTime * 10;
+                this.glowPhase += deltaTime * 15;
+                this.spin += this.spinSpeed * deltaTime;
                 
                 // Enhanced gravity with air resistance
-                this.vy += 400 * deltaTime;
-                this.vx *= 0.999; // Air resistance
+                this.vy += 500 * deltaTime; // Stronger gravity
+                this.vx *= 0.998; // Less air resistance for more bounce
                 
                 // Update position
                 this.x += this.vx * deltaTime;
                 this.y += this.vy * deltaTime;
                 
-                // Create sparkles
-                if (Math.random() < 0.3) {
+                // Create sparkles based on speed
+                const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                if (Math.random() < 0.4 && speed > 50) {
                     this.sparkles.push({
-                        x: this.x + (Math.random() - 0.5) * 20,
-                        y: this.y + (Math.random() - 0.5) * 20,
-                        life: 0.5,
-                        maxLife: 0.5
+                        x: this.x + (Math.random() - 0.5) * 30,
+                        y: this.y + (Math.random() - 0.5) * 30,
+                        life: 0.8,
+                        maxLife: 0.8,
+                        vx: (Math.random() - 0.5) * 100,
+                        vy: (Math.random() - 0.5) * 100
                     });
                 }
                 
-                // Update sparkles
+                // Update sparkles with physics
                 this.sparkles = this.sparkles.filter(sparkle => {
                     sparkle.life -= deltaTime;
+                    sparkle.x += sparkle.vx * deltaTime;
+                    sparkle.y += sparkle.vy * deltaTime;
+                    sparkle.vy += 200 * deltaTime; // Gravity for sparkles
                     return sparkle.life > 0;
                 });
                 
@@ -587,21 +750,32 @@
                     }
                 }
                 
-                // Boundary collisions with enhanced effects
+                // Boundary collisions with CRAZY effects
                 if (this.x <= this.radius || this.x >= canvas.width - this.radius) {
-                    this.vx = -this.vx * 0.85;
+                    this.vx = -this.vx * 0.9; // More bounce
                     this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
+                    this.spinSpeed += Math.random() * 20 - 10; // Random spin
                     this.createImpactEffect(this.x, this.y);
+                    playBounceSound(); // Play bounce sound
+                    this.createScreenShake(0.2);
                 }
                 if (this.y <= this.radius) {
-                    this.vy = Math.abs(this.vy) * 0.85;
+                    this.vy = Math.abs(this.vy) * 0.9; // More bounce
                     this.y = this.radius;
+                    this.spinSpeed += Math.random() * 20 - 10; // Random spin
                     this.createImpactEffect(this.x, this.y);
+                    playBounceSound(); // Play bounce sound
+                    this.createScreenShake(0.2);
                 }
                 
-                // Update trail
-                this.trail.push({ x: this.x, y: this.y, life: 1.0 });
-                this.trail.forEach(point => point.life -= deltaTime * 2);
+                // Update trail with more particles
+                this.trail.push({ 
+                    x: this.x, 
+                    y: this.y, 
+                    life: 1.0,
+                    size: this.radius * (0.5 + Math.random() * 0.5)
+                });
+                this.trail.forEach(point => point.life -= deltaTime * 1.5);
                 this.trail = this.trail.filter(point => point.life > 0);
                 
                 // Deactivate if falls off screen
@@ -610,8 +784,8 @@
                     loseLife();
                 }
                 
-                // Energy loss over time
-                this.energy -= deltaTime * 0.1;
+                // Energy loss over time (slower)
+                this.energy -= deltaTime * 0.05;
                 if (this.energy <= 0) {
                     this.active = false;
                 }
@@ -626,7 +800,22 @@
                 setTimeout(() => effect.remove(), 300);
             }
             
+            createScreenShake(intensity) {
+                document.body.style.animation = `shake ${intensity}s ease-in-out`;
+                setTimeout(() => document.body.style.animation = '', intensity * 1000);
+            }
+            
             collidesWith(obj) {
+                if (obj.type === 'chamber') {
+                    // Special circular collision for target
+                    const centerX = obj.x + obj.width / 2;
+                    const centerY = obj.y + obj.height / 2;
+                    const dx = this.x - centerX;
+                    const dy = this.y - centerY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    return distance < (obj.width / 2); // Use radius instead of radius + particle radius
+                }
+                
                 const closestX = Math.max(obj.x, Math.min(this.x, obj.x + obj.width));
                 const closestY = Math.max(obj.y, Math.min(this.y, obj.y + obj.height));
                 
@@ -637,6 +826,35 @@
             }
             
             handleCollision(obj) {
+                // Special handling for target - capture the particle
+                if (obj.type === 'chamber') {
+                    this.active = false;
+                    gameState.score += 100;
+                    gameState.levelCompleted = true;
+                    
+                    // Play victory sound
+                    playVictorySound();
+                    
+                    // Create celebration effect
+                    for (let i = 0; i < 20; i++) {
+                        this.sparkles.push({
+                            x: this.x + (Math.random() - 0.5) * 60,
+                            y: this.y + (Math.random() - 0.5) * 60,
+                            life: 2.0,
+                            maxLife: 2.0,
+                            vx: (Math.random() - 0.5) * 300,
+                            vy: (Math.random() - 0.5) * 300
+                        });
+                    }
+                    
+                    // Auto advance to next level after celebration
+                    setTimeout(() => {
+                        nextLevel();
+                    }, 2000);
+                    
+                    return; // Don't bounce, just capture
+                }
+                
                 const centerX = obj.x + obj.width / 2;
                 const centerY = obj.y + obj.height / 2;
                 
@@ -650,111 +868,194 @@
                 }
                 
                 // Push particle out
-                this.x = centerX + normalX * (obj.width/2 + this.radius + 1);
-                this.y = centerY + normalY * (obj.height/2 + this.radius + 1);
+                this.x = centerX + normalX * (obj.width/2 + this.radius + 2);
+                this.y = centerY + normalY * (obj.height/2 + this.radius + 2);
                 
-                // Enhanced bounce with energy loss
-                const elasticity = obj.type === 'bouncy-pad' ? 1.2 : 0.8;
+                // CRAZY bounce physics
+                let elasticity = 0.8;
+                if (obj.type === 'bouncy-pad') {
+                    elasticity = 1.4; // Super bouncy!
+                } else if (obj.type === 'ramp') {
+                    elasticity = 1.1; // Slightly bouncy
+                }
+                
                 const dot = this.vx * normalX + this.vy * normalY;
+                const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
                 
-                this.vx -= 2 * dot * normalX * elasticity * this.energy;
-                this.vy -= 2 * dot * normalY * elasticity * this.energy;
+                // Apply bounce with random variation for chaos
+                const randomFactor = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
+                this.vx -= 2 * dot * normalX * elasticity * this.energy * randomFactor;
+                this.vy -= 2 * dot * normalY * elasticity * this.energy * randomFactor;
                 
-                // Ramp behavior
+                // Add random spin based on collision
+                this.spinSpeed += (Math.random() - 0.5) * 30;
+                
+                // Ramp behavior with enhanced physics
                 if (obj.type === 'ramp') {
-                    const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
                     const angle = obj.rotation - Math.PI/4;
-                    this.vx = Math.cos(angle) * speed * 0.9;
-                    this.vy = Math.sin(angle) * speed * 0.9;
+                    const newSpeed = Math.sqrt(this.vx * this.vx + this.vy * this.vy) * 1.1; // Speed boost
+                    this.vx = Math.cos(angle) * newSpeed;
+                    this.vy = Math.sin(angle) * newSpeed;
                 }
                 
                 this.bounces++;
+                this.lastCollisionTime = Date.now();
+                
+                // Create spectacular impact effects
                 this.createImpactEffect(this.x, this.y);
                 
-                // Add screen shake for big impacts
-                if (this.bounces % 3 === 0) {
-                    document.body.style.animation = 'shake 0.1s ease-in-out';
-                    setTimeout(() => document.body.style.animation = '', 100);
+                // Play bounce sound
+                playBounceSound();
+                
+                // Screen shake based on impact force
+                const impactForce = speed / 100;
+                this.createScreenShake(Math.min(impactForce * 0.3, 0.5));
+                
+                // Create explosion of sparkles
+                for (let i = 0; i < 8; i++) {
+                    this.sparkles.push({
+                        x: this.x + (Math.random() - 0.5) * 40,
+                        y: this.y + (Math.random() - 0.5) * 40,
+                        life: 1.0,
+                        maxLife: 1.0,
+                        vx: (Math.random() - 0.5) * 200,
+                        vy: (Math.random() - 0.5) * 200
+                    });
                 }
             }
             
             render(ctx) {
                 if (!this.active) return;
                 
-                // Enhanced trail with fading
+                // Enhanced trail with fading and size variation
                 this.trail.forEach((point, index) => {
                     const alpha = point.life * (index + 1) / this.trail.length;
                     ctx.save();
-                    ctx.globalAlpha = alpha * 0.8;
+                    ctx.globalAlpha = alpha * 0.9;
                     ctx.fillStyle = '#FFFF00';
                     ctx.shadowColor = '#FFFF00';
-                    ctx.shadowBlur = 10;
+                    ctx.shadowBlur = 15;
                     ctx.beginPath();
-                    ctx.arc(point.x, point.y, this.radius * alpha, 0, Math.PI * 2);
+                    ctx.arc(point.x, point.y, point.size * alpha, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.restore();
                 });
                 
-                // Main particle with enhanced glow
+                // Main particle with CRAZY effects
                 ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.spin);
+                
+                // Outer glow
                 ctx.shadowColor = '#FFFF00';
-                ctx.shadowBlur = 20 * this.energy;
+                ctx.shadowBlur = 30 * this.energy;
                 ctx.fillStyle = '#FFFF00';
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius * this.energy, 0, Math.PI * 2);
+                ctx.arc(0, 0, this.radius * this.energy, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Middle ring
+                ctx.shadowBlur = 15;
+                ctx.fillStyle = '#FFAA00';
+                ctx.beginPath();
+                ctx.arc(0, 0, this.radius * 0.8 * this.energy, 0, Math.PI * 2);
                 ctx.fill();
                 
                 // Inner core
                 ctx.shadowBlur = 0;
                 ctx.fillStyle = '#FFFFFF';
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius * 0.5 * this.energy, 0, Math.PI * 2);
+                ctx.arc(0, 0, this.radius * 0.4 * this.energy, 0, Math.PI * 2);
                 ctx.fill();
+                
+                // Speed lines
+                const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                if (speed > 100) {
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 2;
+                    ctx.globalAlpha = 0.6;
+                    for (let i = 0; i < 3; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(-this.radius * 1.5, 0);
+                        ctx.lineTo(-this.radius * 2.5, (Math.random() - 0.5) * 10);
+                        ctx.stroke();
+                    }
+                }
+                
                 ctx.restore();
                 
-                // Render sparkles
+                // Render sparkles with physics
                 this.sparkles.forEach(sparkle => {
                     ctx.save();
                     ctx.globalAlpha = sparkle.life / sparkle.maxLife;
-                    ctx.fillStyle = '#00FFFF';
-                    ctx.shadowColor = '#00FFFF';
-                    ctx.shadowBlur = 5;
+                    const colors = ['#00FFFF', '#FF00FF', '#FFFF00', '#FF0080'];
+                    ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
+                    ctx.shadowColor = ctx.fillStyle;
+                    ctx.shadowBlur = 8;
                     ctx.beginPath();
-                    ctx.arc(sparkle.x, sparkle.y, 2, 0, Math.PI * 2);
+                    ctx.arc(sparkle.x, sparkle.y, 3, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.restore();
                 });
             }
         }
         
-        // Enhanced level definitions
+        // Enhanced level definitions - FÍSICA REALISTA CON OBJETIVOS LATERALES
         const levels = [
             {
-                name: "Tutorial",
+                name: "Tutorial - Caída Libre",
                 objects: [
-                    { type: 'ramp', x: 200, y: 400, width: 80, height: 60, color: '#FF0080' },
-                    { type: 'bouncy-pad', x: 150, y: 300, width: 40, height: 40, color: '#39FF14' }
+                    { type: 'ramp', x: 120, y: 160, width: 80, height: 60, color: '#FF0080' },
+                    { type: 'bouncy-pad', x: 200, y: 280, width: 50, height: 50, color: '#39FF14' }
                 ],
-                target: { x: 300, y: 500, radius: 30 }
+                target: { x: 80, y: 350, radius: 30 }, // IZQUIERDA
+                launcher: { x: 160, y: 25 }
             },
             {
-                name: "Bounce House",
+                name: "Rebote Perfecto",
                 objects: [
-                    { type: 'bouncy-pad', x: 100, y: 200, width: 50, height: 50, color: '#39FF14' },
-                    { type: 'bouncy-pad', x: 250, y: 300, width: 50, height: 50, color: '#39FF14' },
-                    { type: 'ramp', x: 150, y: 400, width: 100, height: 80, color: '#FF0080' }
+                    { type: 'block', x: 80, y: 120, width: 60, height: 15, color: '#00FFFF' },
+                    { type: 'bouncy-pad', x: 160, y: 200, width: 60, height: 60, color: '#39FF14' },
+                    { type: 'ramp', x: 40, y: 280, width: 90, height: 70, color: '#FF0080' }
                 ],
-                target: { x: 350, y: 500, radius: 30 }
+                target: { x: 240, y: 350, radius: 30 }, // DERECHA
+                launcher: { x: 160, y: 25 }
             },
             {
-                name: "Gravity Maze",
+                name: "Maze de Gravedad",
                 objects: [
-                    { type: 'block', x: 50, y: 150, width: 60, height: 20, color: '#00FFFF' },
-                    { type: 'block', x: 150, y: 200, width: 60, height: 20, color: '#00FFFF' },
-                    { type: 'block', x: 250, y: 250, width: 60, height: 20, color: '#00FFFF' },
-                    { type: 'ramp', x: 100, y: 350, width: 120, height: 100, color: '#FF0080' }
+                    { type: 'block', x: 40, y: 80, width: 80, height: 15, color: '#00FFFF' },
+                    { type: 'block', x: 160, y: 140, width: 80, height: 15, color: '#00FFFF' },
+                    { type: 'bouncy-pad', x: 80, y: 200, width: 50, height: 50, color: '#39FF14' },
+                    { type: 'ramp', x: 200, y: 250, width: 80, height: 60, color: '#FF0080' },
+                    { type: 'block', x: 40, y: 320, width: 60, height: 15, color: '#00FFFF' }
                 ],
-                target: { x: 200, y: 500, radius: 30 }
+                target: { x: 280, y: 350, radius: 30 }, // EXTREMA DERECHA
+                launcher: { x: 160, y: 25 }
+            },
+            {
+                name: "Desafío Vertical",
+                objects: [
+                    { type: 'bouncy-pad', x: 80, y: 100, width: 50, height: 50, color: '#39FF14' },
+                    { type: 'block', x: 160, y: 160, width: 60, height: 15, color: '#00FFFF' },
+                    { type: 'bouncy-pad', x: 240, y: 220, width: 50, height: 50, color: '#39FF14' },
+                    { type: 'ramp', x: 120, y: 280, width: 80, height: 60, color: '#FF0080' }
+                ],
+                target: { x: 60, y: 350, radius: 30 }, // EXTREMA IZQUIERDA
+                launcher: { x: 160, y: 25 }
+            },
+            {
+                name: "Máximo Reto",
+                objects: [
+                    { type: 'block', x: 40, y: 80, width: 50, height: 15, color: '#00FFFF' },
+                    { type: 'bouncy-pad', x: 120, y: 110, width: 40, height: 40, color: '#39FF14' },
+                    { type: 'block', x: 200, y: 140, width: 50, height: 15, color: '#00FFFF' },
+                    { type: 'ramp', x: 80, y: 190, width: 60, height: 45, color: '#FF0080' },
+                    { type: 'bouncy-pad', x: 160, y: 250, width: 40, height: 40, color: '#39FF14' },
+                    { type: 'block', x: 240, y: 300, width: 50, height: 15, color: '#00FFFF' }
+                ],
+                target: { x: 260, y: 350, radius: 30 }, // DERECHA
+                launcher: { x: 160, y: 25 }
             }
         ];
         
@@ -764,6 +1065,8 @@
             gameState.particle = null;
             gameState.effects = [];
             gameState.particles = [];
+            gameState.levelCompleted = false;
+            gameState.gameOver = false;
             
             const level = levels[levelIndex];
             level.objects.forEach(objData => {
@@ -778,11 +1081,11 @@
                 gameState.objects.push(obj);
             });
             
-            // Create launcher
-            gameState.launcher = new GameObject('launcher', 50, canvas.height - 100, 30, 30, '#FFFF00');
+            // Create launcher at top of screen
+            gameState.launcher = new GameObject('launcher', level.launcher.x - 15, level.launcher.y - 15, 30, 30, '#FFFF00');
             gameState.objects.push(gameState.launcher);
             
-            // Create target chamber
+            // Create target chamber at bottom
             gameState.chamber = new GameObject('chamber', level.target.x - level.target.radius, level.target.y - level.target.radius, level.target.radius * 2, level.target.radius * 2, '#FF0080');
             gameState.objects.push(gameState.chamber);
             
@@ -797,7 +1100,14 @@
         function launchParticle() {
             if (gameState.particle && gameState.particle.active) return;
             
+            // Initialize audio on first user interaction
+            initAudio();
+            
+            // Create particle at launcher position (top of screen)
             gameState.particle = new Particle(gameState.launcher.x + 15, gameState.launcher.y + 15);
+            
+            // Play launch sound
+            playLaunchSound();
             
             // Add launch effect
             const effect = document.createElement('div');
@@ -811,10 +1121,132 @@
         }
         
         function nextLevel() {
-                if (gameState.currentLevel < levels.length) {
+            if (!gameState.levelCompleted && !gameState.gameOver) {
+                return; // Don't allow next level if current level not completed
+            }
+            
+            if (gameState.currentLevel < levels.length) {
                 initLevel(gameState.currentLevel);
-                } else {
-                alert('🎉 ¡Felicidades! Has completado todos los niveles!');
+            } else {
+                // All levels completed
+                const overlay = document.createElement('div');
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.9);
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 10000;
+                    color: #00FFFF;
+                    font-family: 'Orbitron', monospace;
+                `;
+                
+                overlay.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <h1 style="font-size: 3rem; margin-bottom: 1rem; color: #39FF14; text-shadow: 0 0 20px #39FF14;">🎉 ¡FELICIDADES!</h1>
+                        <p style="font-size: 1.5rem; margin-bottom: 2rem;">Has completado todos los niveles</p>
+                        <p style="font-size: 1.2rem; margin-bottom: 2rem;">Puntuación Final: ${gameState.score}</p>
+                        
+                        <!-- Donation Section -->
+                        <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(57, 255, 20, 0.1); border: 2px solid #39FF14; border-radius: 15px;">
+                            <h3 style="color: #FFFF00; margin-bottom: 1rem; font-size: 1.3rem;">💖 ¡Apoya el desarrollo!</h3>
+                            <p style="margin-bottom: 1.5rem; color: #FFFFFF; font-size: 1rem;">¡Eres un maestro de la física! Ayúdanos a crear más juegos</p>
+                            <div style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem;">
+                                <a href="https://paypal.me/lipastudios/0.50" target="_blank" onclick="trackDonationClick('0.50')" style="
+                                    padding: 12px 20px; 
+                                    background: linear-gradient(45deg, #4CAF50, #8BC34A); 
+                                    color: white; 
+                                    font-weight: bold; 
+                                    border-radius: 8px; 
+                                    text-decoration: none; 
+                                    font-size: 14px;
+                                    transition: transform 0.3s ease;
+                                    display: inline-block;
+                                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                    ☕ 0,50€
+                                </a>
+                                <a href="https://paypal.me/lipastudios/2.00" target="_blank" onclick="trackDonationClick('2.00')" style="
+                                    padding: 12px 20px; 
+                                    background: linear-gradient(45deg, #FF9800, #FFC107); 
+                                    color: white; 
+                                    font-weight: bold; 
+                                    border-radius: 8px; 
+                                    text-decoration: none; 
+                                    font-size: 14px;
+                                    transition: transform 0.3s ease;
+                                    display: inline-block;
+                                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                    🍕 2€
+                                </a>
+                                <a href="https://paypal.me/lipastudios/5.00" target="_blank" onclick="trackDonationClick('5.00')" style="
+                                    padding: 12px 20px; 
+                                    background: linear-gradient(45deg, #E91E63, #F06292); 
+                                    color: white; 
+                                    font-weight: bold; 
+                                    border-radius: 8px; 
+                                    text-decoration: none; 
+                                    font-size: 14px;
+                                    transition: transform 0.3s ease;
+                                    display: inline-block;
+                                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                    🎮 5€
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <button onclick="showLeaderboard('neon-lab-physics-wow')" style="
+                                background: linear-gradient(45deg, #FFD700, #FFA500);
+                                border: 2px solid #FFFFFF;
+                                color: #000;
+                                padding: 15px 30px;
+                                border-radius: 8px;
+                                font-weight: bold;
+                                font-family: 'Orbitron', monospace;
+                                font-size: 1.1rem;
+                                cursor: pointer;
+                                transition: transform 0.3s ease;
+                            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                🏆 RANKING
+                            </button>
+                            <button onclick="restartGame()" style="
+                                background: linear-gradient(45deg, #FF0080, #00FFFF);
+                                border: 2px solid #FFFFFF;
+                                color: #000;
+                                padding: 15px 30px;
+                                border-radius: 8px;
+                                font-weight: bold;
+                                font-family: 'Orbitron', monospace;
+                                font-size: 1.1rem;
+                                cursor: pointer;
+                                transition: transform 0.3s ease;
+                            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                🔄 JUGAR DE NUEVO
+                            </button>
+                            <button onclick="closeGameOver()" style="
+                                background: linear-gradient(45deg, #39FF14, #FFFF00);
+                                border: 2px solid #FFFFFF;
+                                color: #000;
+                                padding: 15px 30px;
+                                border-radius: 8px;
+                                font-weight: bold;
+                                font-family: 'Orbitron', monospace;
+                                font-size: 1.1rem;
+                                cursor: pointer;
+                                transition: transform 0.3s ease;
+                            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                ❌ CERRAR
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(overlay);
             }
         }
         
@@ -823,30 +1255,164 @@
             updateUI();
             
             if (gameState.lives <= 0) {
-                alert('💀 Game Over! Inténtalo de nuevo.');
-                gameState.lives = gameState.maxLives;
-                initLevel(0);
+                gameState.gameOver = true;
+                    showGameOver();
             }
+        }
+        
+        function showGameOver() {
+            // Submit score to leaderboard
+            if (leaderboard) {
+                leaderboard.submitScore(gameState.score, gameState.currentLevel, 1);
+            }
+            
+            // Create game over overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                color: #00FFFF;
+                font-family: 'Orbitron', monospace;
+            `;
+            
+            overlay.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <h1 style="font-size: 3rem; margin-bottom: 1rem; color: #FF0080; text-shadow: 0 0 20px #FF0080;">💀 GAME OVER</h1>
+                    <p style="font-size: 1.5rem; margin-bottom: 2rem;">Puntuación Final: ${gameState.score}</p>
+                    <p style="font-size: 1.2rem; margin-bottom: 2rem;">Nivel Alcanzado: ${gameState.currentLevel}</p>
+                    
+                    <!-- Donation Section -->
+                    <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(255, 0, 128, 0.1); border: 2px solid #FF0080; border-radius: 15px;">
+                        <h3 style="color: #FFFF00; margin-bottom: 1rem; font-size: 1.3rem;">💖 ¡Apoya el desarrollo!</h3>
+                        <p style="margin-bottom: 1.5rem; color: #FFFFFF; font-size: 1rem;">Cada donación nos motiva a crear más juegos épicos</p>
+                        <div style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <a href="https://paypal.me/lipastudios/0.50" target="_blank" onclick="trackDonationClick('0.50')" style="
+                                padding: 12px 20px; 
+                                background: linear-gradient(45deg, #4CAF50, #8BC34A); 
+                                color: white; 
+                                font-weight: bold; 
+                                border-radius: 8px; 
+                                text-decoration: none; 
+                                font-size: 14px;
+                                transition: transform 0.3s ease;
+                                display: inline-block;
+                            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                ☕ 0,50€
+                            </a>
+                            <a href="https://paypal.me/lipastudios/2.00" target="_blank" onclick="trackDonationClick('2.00')" style="
+                                padding: 12px 20px; 
+                                background: linear-gradient(45deg, #FF9800, #FFC107); 
+                                color: white; 
+                                font-weight: bold; 
+                                border-radius: 8px; 
+                                text-decoration: none; 
+                                font-size: 14px;
+                                transition: transform 0.3s ease;
+                                display: inline-block;
+                            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                🍕 2€
+                            </a>
+                            <a href="https://paypal.me/lipastudios/5.00" target="_blank" onclick="trackDonationClick('5.00')" style="
+                                padding: 12px 20px; 
+                                background: linear-gradient(45deg, #E91E63, #F06292); 
+                                color: white; 
+                                font-weight: bold; 
+                                border-radius: 8px; 
+                                text-decoration: none; 
+                                font-size: 14px;
+                                transition: transform 0.3s ease;
+                                display: inline-block;
+                            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                🎮 5€
+                            </a>
+                </div>
+                </div>
+                
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button onclick="restartGame()" style="
+                            background: linear-gradient(45deg, #FF0080, #00FFFF);
+                            border: 2px solid #FFFFFF;
+                            color: #000;
+                            padding: 15px 30px;
+                            border-radius: 8px;
+                            font-weight: bold;
+                            font-family: 'Orbitron', monospace;
+                            font-size: 1.1rem;
+                            cursor: pointer;
+                            transition: transform 0.3s ease;
+                        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            🔄 JUGAR DE NUEVO
+                        </button>
+                        <button onclick="closeGameOver()" style="
+                            background: linear-gradient(45deg, #39FF14, #FFFF00);
+                            border: 2px solid #FFFFFF;
+                            color: #000;
+                            padding: 15px 30px;
+                            border-radius: 8px;
+                            font-weight: bold;
+                            font-family: 'Orbitron', monospace;
+                            font-size: 1.1rem;
+                            cursor: pointer;
+                            transition: transform 0.3s ease;
+                        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            ❌ CERRAR
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+        }
+        
+        function restartGame() {
+            // Remove game over overlay
+            const overlay = document.querySelector('div[style*="position: fixed"]');
+            if (overlay) overlay.remove();
+            
+            // Reset game state
+            gameState.lives = gameState.maxLives;
+            gameState.score = 0;
+            gameState.gameOver = false;
+            gameState.levelCompleted = false;
+            
+            // Start from level 1
+            initLevel(0);
+            updateUI();
+        }
+        
+        function closeGameOver() {
+            // Remove game over overlay
+            const overlay = document.querySelector('div[style*="position: fixed"]');
+            if (overlay) overlay.remove();
         }
         
         function showHelp() {
             alert(`🧪 NEON LAB PHYSICS WOW - AYUDA
 
-🎯 OBJETIVO: Lanza la partícula para que llegue a la cámara roja
+🎯 OBJETIVO: Coloca objetos para que la partícula caiga por gravedad y llegue al objetivo rojo
 
 🎮 CONTROLES:
-• Arrastra objetos para moverlos
+• Arrastra objetos para posicionarlos
 • Doble tap para rotar objetos
-• Presiona LAUNCH para lanzar
+• Presiona DROP para soltar la partícula
 
 🔧 OBJETOS:
-• 🟡 LAUNCHER: Punto de lanzamiento
-• 🔴 TARGET: Objetivo a alcanzar
+• 🟡 LAUNCHER: Punto de salida (parte superior)
+• 🔴 TARGET: Objetivo a alcanzar (parte inferior)
 • 🔺 RAMP: Rampa que desvía la partícula
-• 🟢 BOUNCY PAD: Superficie elástica
-• 🔵 BLOCK: Bloque sólido
+• 🟢 BOUNCY PAD: Superficie elástica que rebota
+• 🔵 BLOCK: Bloque sólido que desvía
 
-¡Usa la física realista para resolver cada puzzle!`);
+💡 CONSEJO: La partícula cae por gravedad, usa los objetos para crear el camino perfecto!`);
         }
         
         function gameLoop(currentTime) {
@@ -856,6 +1422,7 @@
             // Clear canvas with enhanced background
             ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
             
             // Update and render objects
             gameState.objects.forEach(obj => {
@@ -868,33 +1435,6 @@
                 gameState.particle.update(deltaTime);
                 gameState.particle.render(ctx);
                 
-                // Check if particle reached target
-                if (gameState.particle.active && gameState.chamber) {
-                    const dx = gameState.particle.x - (gameState.chamber.x + gameState.chamber.width/2);
-                    const dy = gameState.particle.y - (gameState.chamber.y + gameState.chamber.height/2);
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < gameState.chamber.width/2) {
-                        // Level completed!
-                        gameState.particle.active = false;
-                        gameState.score += 100;
-                        
-                        // Celebration effect
-                        for (let i = 0; i < 20; i++) {
-                            const sparkle = document.createElement('div');
-                            sparkle.className = 'trail-particle';
-                            sparkle.style.left = (gameState.chamber.x + gameState.chamber.width/2) + 'px';
-                            sparkle.style.top = (gameState.chamber.y + gameState.chamber.height/2) + 'px';
-                            sparkle.style.background = ['#FF0080', '#00FFFF', '#39FF14', '#FFFF00'][Math.floor(Math.random() * 4)];
-                            document.body.appendChild(sparkle);
-                            setTimeout(() => sparkle.remove(), 500);
-                        }
-            
-            setTimeout(() => {
-                            nextLevel();
-                        }, 1000);
-                    }
-                }
             }
             
             animationId = requestAnimationFrame(gameLoop);
@@ -942,13 +1482,23 @@
             
             const currentTime = Date.now();
             if (currentTime - lastTapTime < 300) {
-                // Double tap - rotate object
-                for (let obj of gameState.objects) {
-                    if (obj.draggable && obj.contains(x, y)) {
-                        obj.rotation += Math.PI / 4;
-                        break;
-                    }
+            // Double tap - rotate object
+            for (let obj of gameState.objects) {
+                if (obj.draggable && obj.contains(x, y)) {
+                    obj.rotation += Math.PI / 4;
+                    // Play rotate sound
+                    playRotateSound();
+                    // Add visual feedback
+                    const effect = document.createElement('div');
+                    effect.className = 'impact-effect';
+                    effect.style.left = x + 'px';
+                    effect.style.top = y + 'px';
+                    effect.style.background = 'radial-gradient(circle, #00FFFF, transparent)';
+                    document.body.appendChild(effect);
+                    setTimeout(() => effect.remove(), 300);
+                    break;
                 }
+            }
             }
             lastTapTime = currentTime;
             
@@ -981,6 +1531,20 @@
             gameState.draggedObject = null;
         });
         
+        // ===== LEADERBOARD FUNCTIONS =====
+        let leaderboard;
+        
+        function showLeaderboard(gameId) {
+            if (window.showLeaderboard && typeof window.showLeaderboard === 'function') {
+                window.showLeaderboard(gameId || 'neon-lab-physics-wow');
+            }
+        }
+        
+        function hideLeaderboard() {
+            const modal = document.querySelector('[style*="position: fixed"]');
+            if (modal) modal.remove();
+        }
+
         // Initialize game
         window.addEventListener('load', () => {
                 resizeCanvas();
@@ -988,6 +1552,11 @@
             initLevel(0);
             lastTime = performance.now();
             gameLoop(lastTime);
+            
+            // Initialize leaderboard
+            setTimeout(() => {
+                leaderboard = new GlobalLeaderboard('neon-lab-physics-wow');
+            }, 100);
         });
         
         window.addEventListener('resize', resizeCanvas);
