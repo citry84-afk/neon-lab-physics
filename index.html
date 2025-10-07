@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Neon Lab Physics WOW - Ultra Realistic Physics Engine</title>
+    <title>Neon Lab - Physics Puzzle</title>
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-633RQLC6T0"></script>
@@ -15,7 +15,7 @@
         
         window.trackDonationClick = function(amount = 'custom') {
             gtag('event', 'donation_click', {
-                source: 'neon_lab_physics_wow',
+                source: 'neon_lab_physics',
                 amount: amount,
                 value: parseFloat(amount) || 1
             });
@@ -23,7 +23,7 @@
     </script>
     
     <!-- MONETAG VERIFICATION -->
-    <meta name="monetag" content="429424ce8d7544787550ae4e27dc0dbd">
+    <meta name="monetag" content="9947c7f27ea2c698a189ce0980beae88">
     
     <!-- AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4837743291717475"
@@ -35,252 +35,178 @@
     
     <!-- PWA Icons -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23FF0080'/%3E%3Cpath d='M8 8h16v8H8z' fill='%23FFFF00' stroke='%23FFFFFF'/%3E%3Ccircle cx='12' cy='24' r='3' fill='%2339FF14'/%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23FF0080'/%3E%3Cpath d='M40 40h40v40H40z' fill='%23FFFF00' stroke='%23FFFFFF' stroke-width='3'/%3E%3Ccircle cx='60' cy='120' r='12' fill='%2339FF14'/%3E%3Ctext x='90' y='110' font-family='monospace' font-size='24' fill='%2300FFFF'%3ELAB WOW%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23FF0080'/%3E%3Cpath d='M40 40h40v40H40z' fill='%23FFFF00' stroke='%23FFFFFF' stroke-width='3'/%3E%3Ccircle cx='60' cy='120' r='12' fill='%2339FF14'/%3E%3Ctext x='90' y='110' font-family='monospace' font-size='24' fill='%2300FFFF'%3ELAB%3C/text%3E%3C/svg%3E">
     <meta name="theme-color" content="#FF0080">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-        
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Orbitron', monospace;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%),
-                linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 25%, #16213e 50%, #0e3460 75%, #0a0a0a 100%);
+            font-family: monospace;
+            background: linear-gradient(135deg, #000 0%, #111 100%);
             color: #00FFFF;
             overflow-x: hidden;
             user-select: none;
             touch-action: manipulation;
-            min-height: 100vh;
         }
 
-        .particles-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .particle-bg {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: #00FFFF;
-            border-radius: 50%;
-            animation: float 8s linear infinite;
-            opacity: 0.6;
-        }
-
-        @keyframes float {
-            from { 
-                transform: translateY(100vh) translateX(0px);
-                opacity: 0;
-            }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.6; }
-            to { 
-                transform: translateY(-100px) translateX(100px);
-                opacity: 0;
-            }
-        }
-
+        // Inicialización segura de anuncios
+        window.addEventListener('DOMContentLoaded', () => {
+            hideAds();
+        });
         .header {
-            height: 60px;
-            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(20,20,40,0.9));
-            border-bottom: 3px solid #00FFFF;
+            height: 50px;
+            background: rgba(0,0,0,0.9);
+            border-bottom: 2px solid #00FFFF;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
-            position: relative;
-            z-index: 10;
-            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+            padding: 0 15px;
         }
-        
-        .title { 
-            font-size: 1.8rem; 
-            font-weight: 900; 
-            color: #39FF14;
-            text-shadow: 0 0 10px #39FF14;
-            animation: titleGlow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes titleGlow {
-            from { text-shadow: 0 0 10px #39FF14, 0 0 20px #39FF14; }
-            to { text-shadow: 0 0 20px #39FF14, 0 0 30px #39FF14, 0 0 40px #39FF14; }
-        }
-        
-        .level-info { 
-            font-size: 1rem; 
-            color: #00FFFF;
-            text-shadow: 0 0 5px #00FFFF;
-        }
-        
-        .lives-display { 
-            font-size: 1.2rem;
-            text-shadow: 0 0 5px #FF0080;
-        }
+        .title { font-size: 1.5rem; font-weight: bold; color: #39FF14; }
+        .level-info { font-size: 0.9rem; }
         
         .instructions {
-            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(20,20,40,0.9));
+            background: rgba(0,0,0,0.8);
             color: #00FFFF;
-            padding: 12px;
+            padding: 8px;
             text-align: center;
-            font-size: 12px;
-            border-bottom: 2px solid #FF0080;
-            position: relative;
-            z-index: 10;
+            font-size: 11px;
         }
         
         .game-area {
-            height: calc(100vh - 180px);
+            height: calc(100vh - 150px);
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            padding-top: 20px;
+            align-items: center;
             background: 
                 linear-gradient(90deg, transparent 49%, rgba(0, 255, 255, 0.05) 50%, transparent 51%),
                 linear-gradient(0deg, transparent 49%, rgba(0, 255, 255, 0.05) 50%, transparent 51%);
             background-size: 20px 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .game-area::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 30% 20%, rgba(255, 0, 128, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 70% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%);
-            pointer-events: none;
         }
         
         canvas {
-            border: 3px solid #FF0080;
-            box-shadow: 
-                0 0 20px rgba(255, 0, 128, 0.5),
-                inset 0 0 20px rgba(0, 255, 255, 0.2);
-            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(20,20,40,0.8));
+            border: 2px solid #FF0080;
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.3);
+            background: rgba(0, 0, 0, 0.3);
             touch-action: none;
-            position: relative;
-            z-index: 5;
         }
         
         .controls {
             height: 80px;
-            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(20,20,40,0.9));
-            border-top: 3px solid #00FFFF;
+            background: rgba(0,0,0,0.9);
+            border-top: 2px solid #00FFFF;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
             padding: 8px;
-            position: relative;
-            z-index: 10;
-            box-shadow: 0 0 20px rgba(0,255,255,0.3);
         }
         
         button {
-            background: linear-gradient(45deg, #FF0080, #00FFFF);
-            border: 2px solid #FFFFFF;
-            color: #000;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: bold;
+            background: #FF0080;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 4px;
             cursor: pointer;
-            font-family: 'Orbitron', monospace;
-            font-size: 12px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(255, 0, 128, 0.3);
-        }
-        
-        button:hover {
-            background: linear-gradient(45deg, #00FFFF, #FF0080);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.5);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        .secondary {
-            background: linear-gradient(45deg, #39FF14, #FFFF00);
-            color: #000;
-        }
-        
-        .tertiary {
-            background: linear-gradient(45deg, #8A2BE2, #FF00FF);
-            color: #FFF;
-        }
-
-        .donation-section {
-            margin-top: 10px;
-        }
-
-        .donation-section h3 {
-            color: #FFFF00; 
-            margin-bottom: 10px; 
-            font-size: 12px;
-            text-align: center;
-        }
-
-        .donation-section div {
-            display: flex; 
-            gap: 8px; 
-            justify-content: center; 
-            flex-wrap: wrap;
-        }
-
-        .donation-section a {
-            padding: 8px 12px; 
-            background: linear-gradient(45deg, #4CAF50, #8BC34A); 
-            color: white; 
-            font-weight: bold;
-            border-radius: 6px; 
-            text-decoration: none; 
+            font-family: monospace;
             font-size: 11px;
-            transition: all 0.3s ease;
+            font-weight: bold;
         }
-
-        .donation-section a:nth-child(2) {
-            background: linear-gradient(45deg, #FF9800, #FFC107);
+        button.secondary { background: #00FFFF; color: #000; }
+        button.tertiary { background: #666; }
+        button:active { transform: scale(0.95); }
+        
+        /* Epic Victory Effects */
+        .victory-explosion {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1500;
+            pointer-events: none;
         }
-
-        .donation-section a:nth-child(3) {
-            background: linear-gradient(45deg, #E91E63, #F06292);
-        }
-
-        .donation-section a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
-        }
-
-        .flash-effect {
+        
+        .confetti {
             position: absolute;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(45deg, #FF0080, #00FFFF, #39FF14, #FFFF00);
+            animation: confetti-fall 2s ease-in-out forwards;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        .sparks {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #FFFF00;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #FFFF00;
+            animation: spark-burst 1.5s ease-out forwards;
+        }
+        
+        @keyframes spark-burst {
+            0% {
+                transform: scale(1) translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0) translate(var(--spark-x, 0), var(--spark-y, 0));
+                opacity: 0;
+            }
+        }
+        
+        .victory-message {
+            position: fixed;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #FF0080, #00FFFF);
+            color: #FFFFFF;
+            padding: 20px 30px;
+            border-radius: 15px;
+            border: 3px solid #FFFF00;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            z-index: 2000;
+            animation: victory-pop 0.8s ease-out;
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.8);
+        }
+        
+        @keyframes victory-pop {
+            0% {
+                transform: translate(-50%, -50%) scale(0) rotate(180deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+        
+        .screen-flash {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 0, 0.4) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 0, 0.3) 0%, transparent 70%);
             z-index: 1000;
             animation: flash 0.5s ease-out;
             pointer-events: none;
@@ -290,156 +216,96 @@
             0% { opacity: 0; }
             50% { opacity: 1; }
             100% { opacity: 0; }
-        }
-
-        .impact-effect {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, #FFFF00, transparent);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 100;
-            animation: impact 0.3s ease-out;
-        }
-        
-        @keyframes impact {
-            0% {
-                transform: scale(0);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(3);
-                opacity: 0;
-            }
-        }
-        
-        .trail-particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #00FFFF;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 50;
-            animation: trailFade 0.5s ease-out forwards;
-        }
-
-        @keyframes trailFade {
-            0% { 
-                opacity: 1;
-                transform: scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: scale(0.5);
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .game-area { 
-                height: calc(100vh - 130px) !important; 
-                padding-top: 3px;
-            }
-            .controls { 
-            position: fixed;
-                bottom: 0; 
-            left: 0;
-                right: 0; 
-            z-index: 1000;
-                height: 50px;
-                gap: 3px;
-                padding: 3px;
-            }
+        }        @media (max-width: 768px) {
+            .game-area { height: calc(100vh - 160px) !important; }
+            .controls { position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000; }
             canvas {
-                width: 90vw !important;
+                width: 95vw !important;
                 height: auto !important;
-                max-width: 320px;
-                max-height: 50vh;
+                max-width: 350px;
+                max-height: 60vh;
             }
-            .title { font-size: 1rem; }
-            button { 
-                padding: 4px 8px; 
-                font-size: 8px; 
+        }
+        
+        .btn.donate-btn {
+            border-color: #ff6600;
+            color: #ff6600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: 2px solid #ff6600;
+            padding: 10px 15px;
+            border-radius: 5px;
             font-weight: bold;
-                border-width: 1px;
-            }
-            .donation-section {
-                margin-top: 2px;
-            }
-            .donation-section h3 {
-                font-size: 8px;
-                margin-bottom: 2px;
-            }
-            .donation-section a {
-                padding: 3px 6px;
-                font-size: 7px;
-            }
-            .instructions {
-                font-size: 9px;
-                padding: 6px;
-            }
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn.donate-btn:hover {
+            background: rgba(255, 102, 0, 0.1);
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
         }
     </style>
+    <!-- FIXES CRÍTICOS NEON LAB v2.2 -->
+    <script src="neon-lab-physics-fixes.js"></script>
 </head>
 <body>
-    <!-- Background Particles -->
-    <div class="particles-bg" id="particlesBg"></div>
-
-    <!-- Ads -->
+    <!-- Ads: ocultos durante el juego; visibles en game over -->
     <div id="top-banner" style="position:fixed;top:0;left:0;width:100%;height:50px;background:rgba(0,0,0,0.9);z-index:9998;display:none;align-items:center;justify-content:center;border-bottom:2px solid #00FFFF;">
-        <ins class="adsbygoogle" style="display:block;width:320px;height:50px;" data-ad-client="ca-pub-4837743291717475" data-ad-slot="6673201053"></ins>
+        <ins class="adsbygoogle" style="display:block;width:320px;height:50px;" data-ad-client="ca-pub-4129506161314540" data-ad-slot="6673201053"></ins>
     </div>
     <div id="bottom-banner" style="position:fixed;bottom:0;left:0;width:100%;height:50px;background:rgba(0,0,0,0.9);z-index:9998;display:none;align-items:center;justify-content:center;border-top:2px solid #00FFFF;">
-        <ins class="adsbygoogle" style="display:block;width:320px;height:50px;" data-ad-client="ca-pub-4837743291717475" data-ad-slot="6673201053"></ins>
+        <ins class="adsbygoogle" style="display:block;width:320px;height:50px;" data-ad-client="ca-pub-4129506161314540" data-ad-slot="6673201053"></ins>
     </div>
     
+    <!-- Banner lateral para móviles (más agresivo) -->
     <div id="side-banner" style="position:fixed; right:10px; top:50%; transform:translateY(-50%); width:120px; height:600px; background:rgba(0,0,0,0.8); border:1px solid #00FFFF; border-radius:8px; display:none; z-index:1000;">
         <ins class="adsbygoogle" 
              style="display:block;width:120px;height:600px;" 
-             data-ad-client="ca-pub-4837743291717475" 
+             data-ad-client="ca-pub-4129506161314540" 
              data-ad-slot="6673201053"></ins>
     </div>
-
     <div class="header">
-        <div class="title">🧪 NEON LAB PHYSICS WOW</div>
+        <div class="title">�� NEON LAB</div>
         <div class="level-info" id="levelDisplay">LEVEL 1</div>
         <div class="lives-display" id="livesDisplay">❤️❤️❤️</div>
     </div>
     
+    <!-- Banner en header del juego -->
     <div id="menu-banner" style="margin: 10px 0; padding: 10px; background: rgba(0,0,0,0.8); border: 1px solid #00FFFF; border-radius: 8px; text-align: center;">
         <ins class="adsbygoogle" 
              style="display:block;width:320px;height:50px;" 
-             data-ad-client="ca-pub-4837743291717475" 
+             data-ad-client="ca-pub-4129506161314540" 
              data-ad-slot="6673201053"></ins>
     </div>
     
     <div class="instructions">
-        🎯 ARRASTRA objetos para crear el camino, DOBLE TAP para rotar, LAUNCH para soltar la partícula
+        🎯 ARRASTRA objetos, DOBLE TAP para rotar, presiona TEST
     </div>
     
     <div class="game-area">
-        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        <canvas id="gameCanvas" width="350" height="500"></canvas>
     </div>
     
     <div class="controls">
         <button onclick="resetLevel()">🔄 RESET</button>
-        <button onclick="launchParticle()">⬇️ DROP</button>
+        <button onclick="launchParticle()">🚀 GO!</button>
         <button class="secondary" onclick="nextLevel()">➡️ NEXT</button>
         <button class="tertiary" onclick="showHelp()">❓ HELP</button>
-        <button onclick="showLeaderboard('neon-lab-physics-wow')" style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000;">🏆 RANKING</button>
         <div class="donation-section">
-            <h3>💖 ¡Apoya el desarrollo!</h3>
-            <div>
-                <a href="https://paypal.me/lipastudios/0.50" target="_blank" onclick="trackDonationClick('0.50')">☕ 0,50€</a>
-                <a href="https://paypal.me/lipastudios/2.00" target="_blank" onclick="trackDonationClick('2.00')">🍕 2€</a>
-                <a href="https://paypal.me/lipastudios/5.00" target="_blank" onclick="trackDonationClick('5.00')">🎮 5€</a>
+            <h3 style="color: #FFFF00; margin-bottom: 15px;">💖 ¡Apoya el desarrollo!</h3>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <a href="https://paypal.me/lipastudios/0.50" target="_blank" onclick="trackDonationClick('0.50')" style="padding: 12px 20px; background: linear-gradient(45deg, #4CAF50, #8BC34A); color: white; font-weight: bold; border-radius: 8px; text-decoration: none; font-size: 14px;">☕ 0,50€</a>
+                <a href="https://paypal.me/lipastudios/2.00" target="_blank" onclick="trackDonationClick('2.00')" style="padding: 12px 20px; background: linear-gradient(45deg, #FF9800, #FFC107); color: white; font-weight: bold; border-radius: 8px; text-decoration: none; font-size: 14px;">🍕 2€</a>
+                <a href="https://paypal.me/lipastudios/5.00" target="_blank" onclick="trackDonationClick('5.00')" style="padding: 12px 20px; background: linear-gradient(45deg, #E91E63, #F06292); color: white; font-weight: bold; border-radius: 8px; text-decoration: none; font-size: 14px;">🎮 5€</a>
             </div>
         </div>
     </div>
 
     <script>
-        console.log("🧪 NEON LAB PHYSICS WOW - ULTRA REALISTIC VERSION");
+        console.log("🧪 NEON LAB - FIXED VERSION");
         
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -453,100 +319,24 @@
             draggedObject: null,
             dragOffset: { x: 0, y: 0 },
             lives: 3,
-            maxLives: 3,
-            score: 0,
-            effects: [],
-            particles: [],
-            levelCompleted: false,
-            gameOver: false
+            maxLives: 3
         };
         
         let isDragging = false;
         let lastTapTime = 0;
         let tapTarget = null;
         let lastTime = 0;
-        let animationId = null;
-        
-        // Audio context for sounds
-        let audioContext = null;
-        let sounds = {};
-        
-        // Initialize audio
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-        
-        // Create sound effects
-        function createSound(frequency, duration, type = 'sine') {
-            if (!audioContext) return;
-            
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-            oscillator.type = type;
-            
-            // Envelope
-            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + duration);
-        }
-        
-        // Sound effects
-        function playBounceSound() {
-            const frequencies = [200, 300, 400, 500];
-            const randomFreq = frequencies[Math.floor(Math.random() * frequencies.length)];
-            createSound(randomFreq, 0.1, 'square');
-        }
-        
-        function playLaunchSound() {
-            createSound(600, 0.3, 'sine');
-            setTimeout(() => createSound(800, 0.2, 'sine'), 100);
-        }
-        
-        function playVictorySound() {
-            // Victory melody
-            const melody = [523, 659, 784, 1047]; // C, E, G, C
-            melody.forEach((freq, index) => {
-                setTimeout(() => createSound(freq, 0.3, 'sine'), index * 150);
-            });
-        }
-        
-        function playRotateSound() {
-            createSound(400, 0.1, 'triangle');
-        }
-        
-        // Initialize background particles
-        function initBackgroundParticles() {
-            const container = document.getElementById('particlesBg');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle-bg';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 8 + 's';
-                particle.style.animationDuration = (6 + Math.random() * 4) + 's';
-                container.appendChild(particle);
-            }
-        }
         
         // Responsive canvas
         function resizeCanvas() {
             if (window.innerWidth < 768) {
-                const maxWidth = Math.min(320, window.innerWidth - 20);
-                const maxHeight = Math.min(450, window.innerHeight * 0.5);
+                const maxWidth = Math.min(350, window.innerWidth - 20);
+                const maxHeight = Math.min(500, window.innerHeight * 0.6);
                 canvas.width = maxWidth;
                 canvas.height = maxHeight;
             } else {
-                canvas.width = 400;
-                canvas.height = 600;
+                canvas.width = 350;
+                canvas.height = 500;
             }
         }
         
@@ -560,15 +350,6 @@
                 this.color = color;
                 this.rotation = 0;
                 this.draggable = type !== 'launcher' && type !== 'chamber';
-                this.glowIntensity = 0;
-                this.pulsePhase = 0;
-                this.isLauncher = type === 'launcher';
-                this.isTarget = type === 'chamber';
-            }
-            
-            update(deltaTime) {
-                this.pulsePhase += deltaTime * 3;
-                this.glowIntensity = Math.sin(this.pulsePhase) * 0.3 + 0.7;
             }
             
             render(ctx) {
@@ -576,83 +357,14 @@
                 ctx.translate(this.x + this.width/2, this.y + this.height/2);
                 ctx.rotate(this.rotation);
                 
-                // Enhanced glow effect
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = 15 * this.glowIntensity;
-                ctx.lineWidth = 3;
-                ctx.strokeStyle = this.color;
                 ctx.fillStyle = this.color;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 2;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 8;
                 
-                if (this.isLauncher) {
-                    // LAUNCHER - Clear start indicator
-                    ctx.fillStyle = '#FFFF00';
-                    ctx.strokeStyle = '#FFFFFF';
-                    ctx.lineWidth = 4;
-                    ctx.shadowColor = '#FFFF00';
-                    ctx.shadowBlur = 20;
-                    
-                    // Draw launcher as a circle with arrow
-                    ctx.beginPath();
-                    ctx.arc(0, 0, this.width/2, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.stroke();
-                    
-                    // Draw arrow pointing down
-                    ctx.fillStyle = '#000000';
-                    ctx.shadowBlur = 0;
-                    ctx.beginPath();
-                    ctx.moveTo(0, -this.width/4);
-                    ctx.lineTo(-this.width/6, this.width/6);
-                    ctx.lineTo(this.width/6, this.width/6);
-                    ctx.closePath();
-                    ctx.fill();
-                    
-                    // Draw "START" text
-                    ctx.fillStyle = '#000000';
-                    ctx.font = 'bold 8px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('START', 0, -this.width/2 - 10);
-                    
-                } else if (this.isTarget) {
-                    // TARGET - Clear end indicator
-                    ctx.fillStyle = '#FF0080';
-                    ctx.strokeStyle = '#FFFFFF';
-                    ctx.lineWidth = 4;
-                    ctx.shadowColor = '#FF0080';
-                    ctx.shadowBlur = 20;
-                    
-                    // Draw target as a circle with bullseye
-                    ctx.beginPath();
-                    ctx.arc(0, 0, this.width/2, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.stroke();
-                    
-                    // Draw inner circle
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.shadowBlur = 0;
-                    ctx.beginPath();
-                    ctx.arc(0, 0, this.width/3, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    // Draw center dot
-                    ctx.fillStyle = '#FF0080';
-                    ctx.beginPath();
-                    ctx.arc(0, 0, this.width/6, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    // Draw "GOAL" text
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.font = 'bold 8px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('GOAL', 0, this.width/2 + 15);
-                    
-                } else if (this.type === 'ramp') {
-                    // Enhanced triangle with gradient
-                    const gradient = ctx.createLinearGradient(-this.width/2, -this.height/2, this.width/2, this.height/2);
-                    gradient.addColorStop(0, this.color);
-                    gradient.addColorStop(1, this.color + '80');
-                    
-                    ctx.fillStyle = gradient;
+                if (this.type === 'ramp') {
+                    // Triangle
                     ctx.beginPath();
                     ctx.moveTo(-this.width/2, this.height/2);
                     ctx.lineTo(this.width/2, this.height/2);
@@ -661,23 +373,13 @@
                     ctx.fill();
                     ctx.stroke();
                 } else if (this.type === 'bouncy-pad') {
-                    // Enhanced circle with radial gradient
-                    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.width/2);
-                    gradient.addColorStop(0, this.color);
-                    gradient.addColorStop(1, this.color + '60');
-                    
-                    ctx.fillStyle = gradient;
+                    // Circle
                     ctx.beginPath();
                     ctx.arc(0, 0, this.width/2, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.stroke();
                 } else {
-                    // Enhanced rectangle with gradient
-                    const gradient = ctx.createLinearGradient(-this.width/2, -this.height/2, this.width/2, this.height/2);
-                    gradient.addColorStop(0, this.color);
-                    gradient.addColorStop(1, this.color + '80');
-                    
-                    ctx.fillStyle = gradient;
+                    // Rectangle
                     ctx.fillRect(-this.width/2, -this.height/2, this.width, this.height);
                     ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
                 }
@@ -695,55 +397,23 @@
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.vx = 0; // No initial horizontal velocity - pure gravity
-                this.vy = 0; // No initial vertical velocity - pure gravity
-                this.radius = 8;
+                this.vx = 120;
+                this.vy = -80;
+                this.radius = 5;
                 this.active = true;
                 this.trail = [];
                 this.bounces = 0;
-                this.energy = 1.0;
-                this.glowPhase = 0;
-                this.sparkles = [];
-                this.spin = 0;
-                this.spinSpeed = 0;
-                this.lastCollisionTime = 0;
             }
             
             update(deltaTime) {
                 if (!this.active) return;
                 
-                this.glowPhase += deltaTime * 15;
-                this.spin += this.spinSpeed * deltaTime;
-                
-                // Enhanced gravity with air resistance
-                this.vy += 500 * deltaTime; // Stronger gravity
-                this.vx *= 0.998; // Less air resistance for more bounce
+                // Gravity
+                this.vy += 350 * deltaTime;
                 
                 // Update position
                 this.x += this.vx * deltaTime;
                 this.y += this.vy * deltaTime;
-                
-                // Create sparkles based on speed
-                const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-                if (Math.random() < 0.4 && speed > 50) {
-                    this.sparkles.push({
-                        x: this.x + (Math.random() - 0.5) * 30,
-                        y: this.y + (Math.random() - 0.5) * 30,
-                        life: 0.8,
-                        maxLife: 0.8,
-                        vx: (Math.random() - 0.5) * 100,
-                        vy: (Math.random() - 0.5) * 100
-                    });
-                }
-                
-                // Update sparkles with physics
-                this.sparkles = this.sparkles.filter(sparkle => {
-                    sparkle.life -= deltaTime;
-                    sparkle.x += sparkle.vx * deltaTime;
-                    sparkle.y += sparkle.vy * deltaTime;
-                    sparkle.vy += 200 * deltaTime; // Gravity for sparkles
-                    return sparkle.life > 0;
-                });
                 
                 // Check collisions
                 for (let obj of gameState.objects) {
@@ -753,72 +423,29 @@
                     }
                 }
                 
-                // Boundary collisions with CRAZY effects
+                // Boundary collisions
                 if (this.x <= this.radius || this.x >= canvas.width - this.radius) {
-                    this.vx = -this.vx * 0.9; // More bounce
+                    this.vx = -this.vx * 0.8;
                     this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
-                    this.spinSpeed += Math.random() * 20 - 10; // Random spin
-                    this.createImpactEffect(this.x, this.y);
-                    playBounceSound(); // Play bounce sound
-                    this.createScreenShake(0.2);
                 }
                 if (this.y <= this.radius) {
-                    this.vy = Math.abs(this.vy) * 0.9; // More bounce
+                    this.vy = Math.abs(this.vy) * 0.8;
                     this.y = this.radius;
-                    this.spinSpeed += Math.random() * 20 - 10; // Random spin
-                    this.createImpactEffect(this.x, this.y);
-                    playBounceSound(); // Play bounce sound
-                    this.createScreenShake(0.2);
                 }
                 
-                // Update trail with more particles
-                this.trail.push({ 
-                    x: this.x, 
-                    y: this.y, 
-                    life: 1.0,
-                    size: this.radius * (0.5 + Math.random() * 0.5)
-                });
-                this.trail.forEach(point => point.life -= deltaTime * 1.5);
-                this.trail = this.trail.filter(point => point.life > 0);
+                // Update trail
+                this.trail.push({ x: this.x, y: this.y });
+                if (this.trail.length > 6) this.trail.shift();
                 
                 // Deactivate if falls off screen
                 if (this.y > canvas.height + 100) {
                     this.active = false;
-                    loseLife();
+                    loseLife(); // ¡PERDER VIDA!
                 }
-                
-                // Energy loss over time (slower)
-                this.energy -= deltaTime * 0.05;
-                if (this.energy <= 0) {
-                    this.active = false;
-                }
-            }
-            
-            createImpactEffect(x, y) {
-                const effect = document.createElement('div');
-                effect.className = 'impact-effect';
-                effect.style.left = x + 'px';
-                effect.style.top = y + 'px';
-                document.body.appendChild(effect);
-                setTimeout(() => effect.remove(), 300);
-            }
-            
-            createScreenShake(intensity) {
-                document.body.style.animation = `shake ${intensity}s ease-in-out`;
-                setTimeout(() => document.body.style.animation = '', intensity * 1000);
             }
             
             collidesWith(obj) {
-                if (obj.type === 'chamber') {
-                    // Special circular collision for target
-                    const centerX = obj.x + obj.width / 2;
-                    const centerY = obj.y + obj.height / 2;
-                    const dx = this.x - centerX;
-                    const dy = this.y - centerY;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    return distance < (obj.width / 2); // Use radius instead of radius + particle radius
-                }
-                
+                // Circle vs Rectangle collision
                 const closestX = Math.max(obj.x, Math.min(this.x, obj.x + obj.width));
                 const closestY = Math.max(obj.y, Math.min(this.y, obj.y + obj.height));
                 
@@ -829,35 +456,7 @@
             }
             
             handleCollision(obj) {
-                // Special handling for target - capture the particle
-                if (obj.type === 'chamber') {
-                    this.active = false;
-                    gameState.score += 100;
-                    gameState.levelCompleted = true;
-                    
-                    // Play victory sound
-                    playVictorySound();
-                    
-                    // Create celebration effect
-                    for (let i = 0; i < 20; i++) {
-                        this.sparkles.push({
-                            x: this.x + (Math.random() - 0.5) * 60,
-                            y: this.y + (Math.random() - 0.5) * 60,
-                            life: 2.0,
-                            maxLife: 2.0,
-                            vx: (Math.random() - 0.5) * 300,
-                            vy: (Math.random() - 0.5) * 300
-                        });
-                    }
-                    
-                    // Auto advance to next level after celebration
-                    setTimeout(() => {
-                        nextLevel();
-                    }, 2000);
-                    
-                    return; // Don't bounce, just capture
-                }
-                
+                // Calculate collision normal
                 const centerX = obj.x + obj.width / 2;
                 const centerY = obj.y + obj.height / 2;
                 
@@ -871,709 +470,762 @@
                 }
                 
                 // Push particle out
-                this.x = centerX + normalX * (obj.width/2 + this.radius + 2);
-                this.y = centerY + normalY * (obj.height/2 + this.radius + 2);
+                this.x = centerX + normalX * (obj.width/2 + this.radius + 1);
+                this.y = centerY + normalY * (obj.height/2 + this.radius + 1);
                 
-                // CRAZY bounce physics
-                let elasticity = 0.8;
-                if (obj.type === 'bouncy-pad') {
-                    elasticity = 1.4; // Super bouncy!
-                } else if (obj.type === 'ramp') {
-                    elasticity = 1.1; // Slightly bouncy
-                }
-                
+                // Bounce
+                const elasticity = obj.type === 'bouncy-pad' ? 1.3 : 0.75;
                 const dot = this.vx * normalX + this.vy * normalY;
-                const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
                 
-                // Apply bounce with random variation for chaos
-                const randomFactor = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
-                this.vx -= 2 * dot * normalX * elasticity * this.energy * randomFactor;
-                this.vy -= 2 * dot * normalY * elasticity * this.energy * randomFactor;
+                this.vx -= 2 * dot * normalX * elasticity;
+                this.vy -= 2 * dot * normalY * elasticity;
                 
-                // Add random spin based on collision
-                this.spinSpeed += (Math.random() - 0.5) * 30;
-                
-                // Ramp behavior with enhanced physics
+                // Ramp behavior
                 if (obj.type === 'ramp') {
+                    const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
                     const angle = obj.rotation - Math.PI/4;
-                    const newSpeed = Math.sqrt(this.vx * this.vx + this.vy * this.vy) * 1.1; // Speed boost
-                    this.vx = Math.cos(angle) * newSpeed;
-                    this.vy = Math.sin(angle) * newSpeed;
+                    this.vx = Math.cos(angle) * speed * 0.9;
+                    this.vy = Math.sin(angle) * speed * 0.9;
                 }
                 
                 this.bounces++;
-                this.lastCollisionTime = Date.now();
-                
-                // Create spectacular impact effects
-                this.createImpactEffect(this.x, this.y);
-                
-                // Play bounce sound
-                playBounceSound();
-                
-                // Screen shake based on impact force
-                const impactForce = speed / 100;
-                this.createScreenShake(Math.min(impactForce * 0.3, 0.5));
-                
-                // Create explosion of sparkles
-                for (let i = 0; i < 8; i++) {
-                    this.sparkles.push({
-                        x: this.x + (Math.random() - 0.5) * 40,
-                        y: this.y + (Math.random() - 0.5) * 40,
-                        life: 1.0,
-                        maxLife: 1.0,
-                        vx: (Math.random() - 0.5) * 200,
-                        vy: (Math.random() - 0.5) * 200
-                    });
-                }
             }
             
             render(ctx) {
                 if (!this.active) return;
                 
-                // Enhanced trail with fading and size variation
+                // Trail
                 this.trail.forEach((point, index) => {
-                    const alpha = point.life * (index + 1) / this.trail.length;
                     ctx.save();
-                    ctx.globalAlpha = alpha * 0.9;
+                    ctx.globalAlpha = (index + 1) / this.trail.length * 0.6;
                     ctx.fillStyle = '#FFFF00';
-                    ctx.shadowColor = '#FFFF00';
-                    ctx.shadowBlur = 15;
                     ctx.beginPath();
-                    ctx.arc(point.x, point.y, point.size * alpha, 0, Math.PI * 2);
+                    ctx.arc(point.x, point.y, this.radius * ((index + 1) / this.trail.length), 0, Math.PI * 2);
                     ctx.fill();
                     ctx.restore();
                 });
                 
-                // Main particle with CRAZY effects
+                // Main particle
                 ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.spin);
-                
-                // Outer glow
-                ctx.shadowColor = '#FFFF00';
-                ctx.shadowBlur = 30 * this.energy;
                 ctx.fillStyle = '#FFFF00';
+                ctx.shadowColor = '#FFFF00';
+                ctx.shadowBlur = 12;
                 ctx.beginPath();
-                ctx.arc(0, 0, this.radius * this.energy, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 ctx.fill();
-                
-                // Middle ring
-                ctx.shadowBlur = 15;
-                ctx.fillStyle = '#FFAA00';
-                ctx.beginPath();
-                ctx.arc(0, 0, this.radius * 0.8 * this.energy, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Inner core
-                ctx.shadowBlur = 0;
-                ctx.fillStyle = '#FFFFFF';
-                ctx.beginPath();
-                ctx.arc(0, 0, this.radius * 0.4 * this.energy, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Speed lines
-                const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-                if (speed > 100) {
-                    ctx.strokeStyle = '#FFFFFF';
-                    ctx.lineWidth = 2;
-                    ctx.globalAlpha = 0.6;
-                    for (let i = 0; i < 3; i++) {
-                        ctx.beginPath();
-                        ctx.moveTo(-this.radius * 1.5, 0);
-                        ctx.lineTo(-this.radius * 2.5, (Math.random() - 0.5) * 10);
-                        ctx.stroke();
-                    }
-                }
-                
                 ctx.restore();
-                
-                // Render sparkles with physics
-                this.sparkles.forEach(sparkle => {
-                    ctx.save();
-                    ctx.globalAlpha = sparkle.life / sparkle.maxLife;
-                    const colors = ['#00FFFF', '#FF00FF', '#FFFF00', '#FF0080'];
-                    ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
-                    ctx.shadowColor = ctx.fillStyle;
-                    ctx.shadowBlur = 8;
-                    ctx.beginPath();
-                    ctx.arc(sparkle.x, sparkle.y, 3, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-                });
             }
         }
         
-        // Enhanced level definitions - FÍSICA REALISTA CON OBJETIVOS LATERALES
         const levels = [
             {
-                name: "Tutorial - Caída Libre",
+                name: "TUTORIAL",
                 objects: [
-                    { type: 'ramp', x: 120, y: 160, width: 80, height: 60, color: '#FF0080' },
-                    { type: 'bouncy-pad', x: 200, y: 280, width: 50, height: 50, color: '#39FF14' }
+                    { type: 'ramp', x: 130, y: 250, width: 70, height: 35, color: '#FF0080' }
                 ],
-                target: { x: 80, y: 350, radius: 30 }, // IZQUIERDA
-                launcher: { x: 160, y: 25 }
+                launcher: { x: 50, y: 100 },
+                chamber: { x: 250, y: 420 }
             },
             {
-                name: "Rebote Perfecto",
+                name: "BOUNCY",
                 objects: [
-                    { type: 'block', x: 80, y: 120, width: 60, height: 15, color: '#00FFFF' },
-                    { type: 'bouncy-pad', x: 160, y: 200, width: 60, height: 60, color: '#39FF14' },
-                    { type: 'ramp', x: 40, y: 280, width: 90, height: 70, color: '#FF0080' }
+                    { type: 'bouncy-pad', x: 100, y: 200, width: 40, height: 40, color: '#39FF14' },
+                    { type: 'block', x: 200, y: 300, width: 60, height: 20, color: '#00FFFF' }
                 ],
-                target: { x: 240, y: 350, radius: 30 }, // DERECHA
-                launcher: { x: 160, y: 25 }
+                launcher: { x: 30, y: 50 },
+                chamber: { x: 270, y: 450 }
             },
             {
-                name: "Maze de Gravedad",
+                name: "DOUBLE RAMP",
                 objects: [
-                    { type: 'block', x: 40, y: 80, width: 80, height: 15, color: '#00FFFF' },
-                    { type: 'block', x: 160, y: 140, width: 80, height: 15, color: '#00FFFF' },
-                    { type: 'bouncy-pad', x: 80, y: 200, width: 50, height: 50, color: '#39FF14' },
-                    { type: 'ramp', x: 200, y: 250, width: 80, height: 60, color: '#FF0080' },
-                    { type: 'block', x: 40, y: 320, width: 60, height: 15, color: '#00FFFF' }
+                    { type: 'ramp', x: 80, y: 200, width: 60, height: 30, color: '#FF0080' },
+                    { type: 'ramp', x: 180, y: 300, width: 60, height: 30, color: '#FF0080' }
                 ],
-                target: { x: 280, y: 350, radius: 30 }, // EXTREMA DERECHA
-                launcher: { x: 160, y: 25 }
+                launcher: { x: 40, y: 80 },
+                chamber: { x: 280, y: 420 }
             },
             {
-                name: "Desafío Vertical",
+                name: "OBSTACLE",
                 objects: [
-                    { type: 'bouncy-pad', x: 80, y: 100, width: 50, height: 50, color: '#39FF14' },
-                    { type: 'block', x: 160, y: 160, width: 60, height: 15, color: '#00FFFF' },
-                    { type: 'bouncy-pad', x: 240, y: 220, width: 50, height: 50, color: '#39FF14' },
-                    { type: 'ramp', x: 120, y: 280, width: 80, height: 60, color: '#FF0080' }
+                    { type: 'block', x: 120, y: 180, width: 80, height: 25, color: '#00FFFF' },
+                    { type: 'ramp', x: 90, y: 280, width: 70, height: 35, color: '#FF0080' },
+                    { type: 'block', x: 200, y: 350, width: 60, height: 20, color: '#00FFFF' }
                 ],
-                target: { x: 60, y: 350, radius: 30 }, // EXTREMA IZQUIERDA
-                launcher: { x: 160, y: 25 }
+                launcher: { x: 30, y: 60 },
+                chamber: { x: 290, y: 440 }
             },
             {
-                name: "Máximo Reto",
+                name: "BOUNCY MAZE",
                 objects: [
-                    { type: 'block', x: 40, y: 80, width: 50, height: 15, color: '#00FFFF' },
-                    { type: 'bouncy-pad', x: 120, y: 110, width: 40, height: 40, color: '#39FF14' },
-                    { type: 'block', x: 200, y: 140, width: 50, height: 15, color: '#00FFFF' },
-                    { type: 'ramp', x: 80, y: 190, width: 60, height: 45, color: '#FF0080' },
-                    { type: 'bouncy-pad', x: 160, y: 250, width: 40, height: 40, color: '#39FF14' },
-                    { type: 'block', x: 240, y: 300, width: 50, height: 15, color: '#00FFFF' }
+                    { type: 'bouncy-pad', x: 80, y: 150, width: 35, height: 35, color: '#39FF14' },
+                    { type: 'block', x: 150, y: 200, width: 70, height: 20, color: '#00FFFF' },
+                    { type: 'bouncy-pad', x: 200, y: 300, width: 35, height: 35, color: '#39FF14' },
+                    { type: 'ramp', x: 120, y: 380, width: 60, height: 30, color: '#FF0080' }
                 ],
-                target: { x: 260, y: 350, radius: 30 }, // DERECHA
-                launcher: { x: 160, y: 25 }
-            }
+                launcher: { x: 40, y: 80 },
+                chamber: { x: 270, y: 450 }
+            },
+            {
+                name: "PRECISION",
+                objects: [
+                    { type: 'block', x: 90, y: 160, width: 15, height: 80, color: '#00FFFF' },
+                    { type: 'block', x: 180, y: 200, width: 15, height: 120, color: '#00FFFF' },
+                    { type: 'ramp', x: 230, y: 350, width: 50, height: 25, color: '#FF0080' }
+                ],
+                launcher: { x: 50, y: 90 },
+                chamber: { x: 300, y: 420 }
+            },
+            {
+                name: "MULTI BOUNCE",
+                objects: [
+                    { type: 'bouncy-pad', x: 70, y: 180, width: 30, height: 30, color: '#39FF14' },
+                    { type: 'bouncy-pad', x: 140, y: 250, width: 30, height: 30, color: '#39FF14' },
+                    { type: 'bouncy-pad', x: 210, y: 180, width: 30, height: 30, color: '#39FF14' },
+                    { type: 'block', x: 170, y: 350, width: 50, height: 20, color: '#00FFFF' }
+                ],
+                launcher: { x: 30, y: 60 },
+                chamber: { x: 280, y: 440 }
+            },
+            {
+                name: "STAIRWAY",
+                objects: [
+                    { type: 'block', x: 70, y: 200, width: 40, height: 20, color: '#00FFFF' },
+                    { type: 'block', x: 120, y: 250, width: 40, height: 20, color: '#00FFFF' },
+                    { type: 'block', x: 170, y: 300, width: 40, height: 20, color: '#00FFFF' },
+                    { type: 'ramp', x: 220, y: 350, width: 50, height: 25, color: '#FF0080' }
+                ],
+                launcher: { x: 40, y: 100 },
+                chamber: { x: 290, y: 430 }
+            },
+            {
+                name: "FUNNEL",
+                objects: [
+                    { type: 'ramp', x: 60, y: 180, width: 50, height: 25, color: '#FF0080' },
+                    { type: 'ramp', x: 220, y: 180, width: 50, height: 25, color: '#FF0080' },
+                    { type: 'block', x: 120, y: 280, width: 80, height: 15, color: '#00FFFF' },
+                    { type: 'bouncy-pad', x: 150, y: 350, width: 30, height: 30, color: '#39FF14' }
+                ],
+                launcher: { x: 160, y: 60 },
+                chamber: { x: 160, y: 450 }
+            },
+            {
+                name: "CHAOS",
+                objects: [
+                    { type: 'bouncy-pad', x: 80, y: 150, width: 25, height: 25, color: '#39FF14' },
+                    { type: 'ramp', x: 130, y: 200, width: 40, height: 20, color: '#FF0080' },
+                    { type: 'block', x: 200, y: 160, width: 30, height: 15, color: '#00FFFF' },
+                    { type: 'bouncy-pad', x: 90, y: 300, width: 25, height: 25, color: '#39FF14' },
+                    { type: 'ramp', x: 180, y: 350, width: 40, height: 20, color: '#FF0080' },
+                    { type: 'block', x: 240, y: 280, width: 25, height: 40, color: '#00FFFF' }
+                ],
+                launcher: { x: 40, y: 80 },
+                chamber: { x: 290, y: 440 }            }
         ];
         
-        function initLevel(levelIndex) {
-            gameState.currentLevel = levelIndex + 1;
+        function loadLevel(levelNumber) {
+            const level = levels[levelNumber - 1];
+            if (!level) return;
+            
+            // Reset banner strategy
+            bannerShown = false;
+            gameStartTime = Date.now();
+            
             gameState.objects = [];
             gameState.particle = null;
-            gameState.effects = [];
-            gameState.particles = [];
-            gameState.levelCompleted = false;
-            gameState.gameOver = false;
             
-            const level = levels[levelIndex];
+            // Scale for canvas size
+            const scaleX = canvas.width / 350;
+            const scaleY = canvas.height / 500;
+            
             level.objects.forEach(objData => {
-                const obj = new GameObject(
+                gameState.objects.push(new GameObject(
                     objData.type,
-                    objData.x, 
-                    objData.y, 
-                    objData.width, 
-                    objData.height, 
+                    objData.x * scaleX,
+                    objData.y * scaleY,
+                    objData.width * scaleX,
+                    objData.height * scaleY,
                     objData.color
-                );
-                gameState.objects.push(obj);
+                ));
             });
             
-            // Create launcher at top of screen
-            gameState.launcher = new GameObject('launcher', level.launcher.x - 15, level.launcher.y - 15, 30, 30, '#FFFF00');
-            gameState.objects.push(gameState.launcher);
+            gameState.launcher = new GameObject(
+                'launcher',
+                level.launcher.x * scaleX,
+                level.launcher.y * scaleY,
+                20 * scaleX,
+                20 * scaleY,
+                '#FFFF00'
+            );
             
-            // Create target chamber at bottom
-            gameState.chamber = new GameObject('chamber', level.target.x - level.target.radius, level.target.y - level.target.radius, level.target.radius * 2, level.target.radius * 2, '#FF0080');
-            gameState.objects.push(gameState.chamber);
+            gameState.chamber = new GameObject(
+                'chamber',
+                level.chamber.x * scaleX,
+                level.chamber.y * scaleY,
+                30 * scaleX,
+                30 * scaleY,
+                '#39FF14'
+            );
             
-            updateUI();
-        }
-        
-        function updateUI() {
-            document.getElementById('levelDisplay').textContent = `LEVEL ${gameState.currentLevel}`;
-            document.getElementById('livesDisplay').textContent = '❤️'.repeat(gameState.lives);
+            document.getElementById('levelDisplay').textContent = `LEVEL ${levelNumber}: ${level.name}`;
         }
         
         function launchParticle() {
             if (gameState.particle && gameState.particle.active) return;
             
-            // Initialize audio on first user interaction
-            initAudio();
+            gameState.particle = new Particle(
+                gameState.launcher.x + gameState.launcher.width/2,
+                gameState.launcher.y + gameState.launcher.height/2
+            );
             
-            // Create particle at launcher position (top of screen)
-            gameState.particle = new Particle(gameState.launcher.x + 15, gameState.launcher.y + 15);
-            
-            // Play launch sound
-            playLaunchSound();
-            
-            // Add launch effect
-            const effect = document.createElement('div');
-            effect.className = 'flash-effect';
-            document.body.appendChild(effect);
-            setTimeout(() => effect.remove(), 500);
+            // Timeout de 8 segundos - si no llega a la meta, perder vida
+            setTimeout(() => {
+                if (gameState.particle && gameState.particle.active) {
+                    gameState.particle.active = false;
+                    loseLife(); // ¡PERDER VIDA POR TIMEOUT!
+                }
+            }, 8000);
         }
         
-        function resetLevel() {
-            initLevel(gameState.currentLevel - 1);
-        }
-        
-        function nextLevel() {
-            if (!gameState.levelCompleted && !gameState.gameOver) {
-                return; // Don't allow next level if current level not completed
-            }
-            
-            if (gameState.currentLevel < levels.length) {
-                initLevel(gameState.currentLevel);
-            } else {
-                // All levels completed
-                const overlay = document.createElement('div');
-                overlay.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.9);
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 10000;
-                    color: #00FFFF;
-                    font-family: 'Orbitron', monospace;
-                `;
-                
-                overlay.innerHTML = `
-                    <div style="text-align: center; padding: 2rem;">
-                        <h1 style="font-size: 3rem; margin-bottom: 1rem; color: #39FF14; text-shadow: 0 0 20px #39FF14;">🎉 ¡FELICIDADES!</h1>
-                        <p style="font-size: 1.5rem; margin-bottom: 2rem;">Has completado todos los niveles</p>
-                        <p style="font-size: 1.2rem; margin-bottom: 2rem;">Puntuación Final: ${gameState.score}</p>
-                        
-                        <!-- Donation Section -->
-                        <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(57, 255, 20, 0.1); border: 2px solid #39FF14; border-radius: 15px;">
-                            <h3 style="color: #FFFF00; margin-bottom: 1rem; font-size: 1.3rem;">💖 ¡Apoya el desarrollo!</h3>
-                            <p style="margin-bottom: 1.5rem; color: #FFFFFF; font-size: 1rem;">¡Eres un maestro de la física! Ayúdanos a crear más juegos</p>
-                            <div style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem;">
-                                <a href="https://paypal.me/lipastudios/0.50" target="_blank" onclick="trackDonationClick('0.50')" style="
-                                    padding: 12px 20px; 
-                                    background: linear-gradient(45deg, #4CAF50, #8BC34A); 
-                                    color: white; 
-                                    font-weight: bold; 
-                                    border-radius: 8px; 
-                                    text-decoration: none; 
-                                    font-size: 14px;
-                                    transition: transform 0.3s ease;
-                                    display: inline-block;
-                                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                    ☕ 0,50€
-                                </a>
-                                <a href="https://paypal.me/lipastudios/2.00" target="_blank" onclick="trackDonationClick('2.00')" style="
-                                    padding: 12px 20px; 
-                                    background: linear-gradient(45deg, #FF9800, #FFC107); 
-                                    color: white; 
-                                    font-weight: bold; 
-                                    border-radius: 8px; 
-                                    text-decoration: none; 
-                                    font-size: 14px;
-                                    transition: transform 0.3s ease;
-                                    display: inline-block;
-                                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                    🍕 2€
-                                </a>
-                                <a href="https://paypal.me/lipastudios/5.00" target="_blank" onclick="trackDonationClick('5.00')" style="
-                                    padding: 12px 20px; 
-                                    background: linear-gradient(45deg, #E91E63, #F06292); 
-                                    color: white; 
-                                    font-weight: bold; 
-                                    border-radius: 8px; 
-                                    text-decoration: none; 
-                                    font-size: 14px;
-                                    transition: transform 0.3s ease;
-                                    display: inline-block;
-                                " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                    🎮 5€
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                            <button onclick="showLeaderboard('neon-lab-physics-wow')" style="
-                                background: linear-gradient(45deg, #FFD700, #FFA500);
-                                border: 2px solid #FFFFFF;
-                                color: #000;
-                                padding: 15px 30px;
-                                border-radius: 8px;
-                                font-weight: bold;
-                                font-family: 'Orbitron', monospace;
-                                font-size: 1.1rem;
-                                cursor: pointer;
-                                transition: transform 0.3s ease;
-                            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                🏆 RANKING
-                            </button>
-                            <button onclick="restartGame()" style="
-                                background: linear-gradient(45deg, #FF0080, #00FFFF);
-                                border: 2px solid #FFFFFF;
-                                color: #000;
-                                padding: 15px 30px;
-                                border-radius: 8px;
-                                font-weight: bold;
-                                font-family: 'Orbitron', monospace;
-                                font-size: 1.1rem;
-                                cursor: pointer;
-                                transition: transform 0.3s ease;
-                            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                🔄 JUGAR DE NUEVO
-                            </button>
-                            <button onclick="closeGameOver()" style="
-                                background: linear-gradient(45deg, #39FF14, #FFFF00);
-                                border: 2px solid #FFFFFF;
-                                color: #000;
-                                padding: 15px 30px;
-                                border-radius: 8px;
-                                font-weight: bold;
-                                font-family: 'Orbitron', monospace;
-                                font-size: 1.1rem;
-                                cursor: pointer;
-                                transition: transform 0.3s ease;
-                            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                ❌ CERRAR
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-                document.body.appendChild(overlay);
-            }
-        }
-        
+        function resetLevel() { loadLevel(gameState.currentLevel); hideAds(); }
         function loseLife() {
             gameState.lives--;
-            updateUI();
+            updateLivesDisplay();
+            
+            // Life lost sound
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (e) {}
             
             if (gameState.lives <= 0) {
-                gameState.gameOver = true;
+                setTimeout(() => {
                     showGameOver();
+                    showAds();
+                }, 1000);
+            } else {
+                setTimeout(() => {
+                    alert(`💔 ¡Experimento fallido! Te quedan ${gameState.lives} intentos.`);
+                }, 500);
             }
         }
         
+        function updateLivesDisplay() {
+            const heartsDisplay = '❤️'.repeat(gameState.lives) + '🖤'.repeat(gameState.maxLives - gameState.lives);
+            document.getElementById('livesDisplay').textContent = heartsDisplay;
+        }
+        
+        // CONTADOR DE PARTIDAS PARA ESTRATEGIA INTELIGENTE
+        let gamesPlayed = 0;
+        let lastInterstitialTime = 0;
+        
         function showGameOver() {
-            // Submit score to leaderboard
-            if (leaderboard) {
-                leaderboard.submitScore(gameState.score, gameState.currentLevel, 1);
+            gamesPlayed++;
+            const currentTime = Date.now();
+            
+            // Track game over
+            gtag('event', 'game_over', { 
+                game_name: 'neon_lab_physics', 
+                level: gameState.currentLevel,
+                lives: gameState.lives
+            });
+            
+            // 🏆 INTEGRACIÓN DEL LEADERBOARD GLOBAL
+            setTimeout(() => {
+                if (window.GlobalLeaderboard) {
+                    if (!window.neonLabLeaderboard) {
+                        window.neonLabLeaderboard = new GlobalLeaderboard('neon-lab-physics');
+                    }
+                    // Enviar puntuación al leaderboard global
+                    window.neonLabLeaderboard.submitScore(gameState.currentLevel, gameState.lives, 0);
+                }
+            }, 1000);
+            
+            // ESTRATEGIA INTELIGENTE DE MONETIZACIÓN
+            // 1. Siempre mostrar banners en game over (no invasivo)
+            // 2. Interstitial solo cada 3 partidas perdidas Y cada 5 minutos mínimo
+            const timeSinceLastInterstitial = currentTime - lastInterstitialTime;
+            const shouldShowInterstitial = (gamesPlayed % 3 === 0) && (timeSinceLastInterstitial > 300000); // 5 minutos
+            
+            if (shouldShowInterstitial) {
+                showInterstitialAd();
+                lastInterstitialTime = currentTime;
             }
             
-            // Create game over overlay
-            const overlay = document.createElement('div');
-            overlay.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.9);
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                z-index: 10000;
-                color: #00FFFF;
-                font-family: 'Orbitron', monospace;
-            `;
-            
-            overlay.innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
-                    <h1 style="font-size: 3rem; margin-bottom: 1rem; color: #FF0080; text-shadow: 0 0 20px #FF0080;">💀 GAME OVER</h1>
-                    <p style="font-size: 1.5rem; margin-bottom: 2rem;">Puntuación Final: ${gameState.score}</p>
-                    <p style="font-size: 1.2rem; margin-bottom: 2rem;">Nivel Alcanzado: ${gameState.currentLevel}</p>
-                    
-                    <!-- Donation Section -->
-                    <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(255, 0, 128, 0.1); border: 2px solid #FF0080; border-radius: 15px;">
-                        <h3 style="color: #FFFF00; margin-bottom: 1rem; font-size: 1.3rem;">💖 ¡Apoya el desarrollo!</h3>
-                        <p style="margin-bottom: 1.5rem; color: #FFFFFF; font-size: 1rem;">Cada donación nos motiva a crear más juegos épicos</p>
-                        <div style="display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem;">
-                            <a href="https://paypal.me/lipastudios/0.50" target="_blank" onclick="trackDonationClick('0.50')" style="
-                                padding: 12px 20px; 
-                                background: linear-gradient(45deg, #4CAF50, #8BC34A); 
-                                color: white; 
-                                font-weight: bold; 
-                                border-radius: 8px; 
-                                text-decoration: none; 
-                                font-size: 14px;
-                                transition: transform 0.3s ease;
-                                display: inline-block;
-                            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                ☕ 0,50€
-                            </a>
-                            <a href="https://paypal.me/lipastudios/2.00" target="_blank" onclick="trackDonationClick('2.00')" style="
-                                padding: 12px 20px; 
-                                background: linear-gradient(45deg, #FF9800, #FFC107); 
-                                color: white; 
-                                font-weight: bold; 
-                                border-radius: 8px; 
-                                text-decoration: none; 
-                                font-size: 14px;
-                                transition: transform 0.3s ease;
-                                display: inline-block;
-                            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                🍕 2€
-                            </a>
-                            <a href="https://paypal.me/lipastudios/5.00" target="_blank" onclick="trackDonationClick('5.00')" style="
-                                padding: 12px 20px; 
-                                background: linear-gradient(45deg, #E91E63, #F06292); 
-                                color: white; 
-                                font-weight: bold; 
-                                border-radius: 8px; 
-                                text-decoration: none; 
-                                font-size: 14px;
-                                transition: transform 0.3s ease;
-                                display: inline-block;
-                            " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                                🎮 5€
-                            </a>
+            // Game Over modal
+            const modal = document.createElement('div');
+            modal.className = 'victory-message';
+            modal.style.background = 'linear-gradient(135deg, #FF0080, #8B0000)';
+            modal.innerHTML = `
+                🧪 ¡EXPERIMENTO FALLIDO! 💀<br>
+                <div style="font-size: 1rem; margin: 15px 0; color: #00FFFF;">
+                    Nivel alcanzado: ${gameState.currentLevel}<br>
+                    Has agotado todas tus vidas
                 </div>
+                <div style="margin: 20px 0;">
+                    <button onclick="shareTwitterGameOver()" style="background: #1DA1F2; color: white; border: none; padding: 8px 15px; margin: 5px; border-radius: 5px; cursor: pointer;">🐦 Twitter</button>
+                    <button onclick="shareWhatsAppGameOver()" style="background: #25D366; color: white; border: none; padding: 8px 15px; margin: 5px; border-radius: 5px; cursor: pointer;">📱 WhatsApp</button>
+                </div>
+                <div>
+                    <button onclick="showGlobalLeaderboard()" style="background: linear-gradient(45deg, #00FFFF, #FF0080); color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-weight: bold;">🏆 RANKING GLOBAL</button>
+                    <button onclick="watchAdToContinue()" style="background: #FF6600; color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-weight: bold;">📺 VER ANUNCIO</button>
+                    <a href="https://paypal.me/lipastudios" target="_blank" onclick="trackDonationClick()" style="background: linear-gradient(45deg, #ff6600, #ffff00); color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block;">💖 ¡Apoya el juego!</a>
+                    <button onclick="restartGame()" style="background: #00FFFF; color: black; border: none; padding: 12px 20px; margin: 5px; border-radius: 5px; cursor: pointer; font-weight: bold;">🔄 REINICIAR</button>
                 </div>
                 
-                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <button onclick="restartGame()" style="
-                            background: linear-gradient(45deg, #FF0080, #00FFFF);
-                            border: 2px solid #FFFFFF;
-                            color: #000;
-                            padding: 15px 30px;
-                            border-radius: 8px;
-                            font-weight: bold;
-                            font-family: 'Orbitron', monospace;
-                            font-size: 1.1rem;
-                            cursor: pointer;
-                            transition: transform 0.3s ease;
-                        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                            🔄 JUGAR DE NUEVO
-                        </button>
-                        <button onclick="closeGameOver()" style="
-                            background: linear-gradient(45deg, #39FF14, #FFFF00);
-                            border: 2px solid #FFFFFF;
-                            color: #000;
-                            padding: 15px 30px;
-                            border-radius: 8px;
-                            font-weight: bold;
-                            font-family: 'Orbitron', monospace;
-                            font-size: 1.1rem;
-                            cursor: pointer;
-                            transition: transform 0.3s ease;
-                        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                            ❌ CERRAR
-                        </button>
-                    </div>
+                <!-- Interstitial Ad Container -->
+                <div id="gameOverAd" style="margin-top: 20px; padding: 10px; background: rgba(0,0,0,0.8); border: 1px solid #00FFFF; border-radius: 8px;">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-4129506161314540"
+                         data-ad-slot="6673201053"
+                         data-ad-format="auto"></ins>
                 </div>
             `;
             
-            document.body.appendChild(overlay);
+            document.body.appendChild(modal);
+            
+            // Show interstitial ad
+            showInterstitialAd();
+            
+            // Game over sound
+            setTimeout(() => {
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.type = 'sawtooth';
+                    oscillator.frequency.setValueAtTime(150, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 1);
+                    
+                    gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 1);
+                } catch (e) {}
+            }, 200);
+        }        function showEpicVictory() {
+            const levelName = levels[gameState.currentLevel - 1]?.name || "EXPERIMENTO";
+            
+            // Screen flash
+            const flash = document.createElement('div');
+            flash.className = 'screen-flash';
+            document.body.appendChild(flash);
+            setTimeout(() => flash.remove(), 500);
+            
+            // Victory message
+            const message = document.createElement('div');
+            message.className = 'victory-message';
+            message.innerHTML = `🧪 ¡${levelName} COMPLETADO! 🎉<br><span style="font-size: 1rem; color: #39FF14;">¡Experimento exitoso!</span>`;
+            document.body.appendChild(message);
+            
+            // Confetti explosion
+            createConfetti();
+            
+            // Sparks burst
+            createSparks();
+            
+            // Victory sound
+            setTimeout(() => {
+                const oscillator = createSimpleOscillator();
+                if (oscillator) {
+                    oscillator.frequency.setValueAtTime(523, oscillator.context.currentTime); // C5
+                    oscillator.frequency.exponentialRampToValueAtTime(1047, oscillator.context.currentTime + 0.5); // C6
+                    oscillator.start();
+                    oscillator.stop(oscillator.context.currentTime + 0.5);
+                }
+            }, 100);
+            
+            // Auto advance to next level
+            setTimeout(() => {
+                message.remove();
+                if (gameState.currentLevel < levels.length) {
+                    gameState.currentLevel++;
+                    loadLevel(gameState.currentLevel);
+                } else {
+                    // All levels completed!
+                    showGameComplete();
+                }
+            }, 2500);
+        }
+        
+        function createConfetti() {
+            const colors = ['#FF0080', '#00FFFF', '#39FF14', '#FFFF00', '#FF6600'];
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    confetti.style.animationDuration = (1.5 + Math.random()) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+        }
+        
+        function createSparks() {
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const spark = document.createElement('div');
+                    spark.className = 'sparks';
+                    spark.style.left = '50%';
+                    spark.style.top = '50%';
+                    
+                    const angle = (Math.PI * 2 * i) / 15;
+                    const distance = 100 + Math.random() * 100;
+                    const x = Math.cos(angle) * distance;
+                    const y = Math.sin(angle) * distance;
+                    
+                    spark.style.setProperty('--spark-x', x + 'px');
+                    spark.style.setProperty('--spark-y', y + 'px');
+                    
+                    document.body.appendChild(spark);
+                    
+                    setTimeout(() => spark.remove(), 1500);
+                }, i * 30);
+            }
+        }
+        
+        function createSimpleOscillator() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                return oscillator;
+            } catch (e) {
+                return null;
+            }
+        }
+        
+        function shareTwitterGameOver() {
+            const message = `🧪 ¡He llegado al nivel ${gameState.currentLevel} en Neon Lab! ¿Puedes llegar más lejos en este puzzle de física? 🎮⚡`;
+            const url = window.location.href;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(url)}`, '_blank');
+        }
+        
+        function shareWhatsAppGameOver() {
+            const message = `🧪 ¡He llegado al nivel ${gameState.currentLevel} en Neon Lab! ¿Puedes llegar más lejos? Juega aquí: ${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+        }
+        
+        function watchAdToContinue() {
+            // Simular anuncio rewarded
+            alert('¡Anuncio visto! Te damos 2 vidas extra.');
+            gameState.lives = Math.min(gameState.maxLives, gameState.lives + 2);
+            updateLivesDisplay();
+            
+            // Remove game over modal
+            const modal = document.querySelector('.victory-message');
+            if (modal) modal.remove();
         }
         
         function restartGame() {
-            // Remove game over overlay
-            const overlay = document.querySelector('div[style*="position: fixed"]');
-            if (overlay) overlay.remove();
+            // Track game restart
+            gtag('event', 'game_restart', { game_name: 'neon_lab_physics' });
             
-            // Reset game state
+            gameState.currentLevel = 1;
             gameState.lives = gameState.maxLives;
-            gameState.score = 0;
-            gameState.gameOver = false;
-            gameState.levelCompleted = false;
-            
-            // Start from level 1
-            initLevel(0);
-            updateUI();
-        }
-        
-        function closeGameOver() {
-            // Remove game over overlay
-            const overlay = document.querySelector('div[style*="position: fixed"]');
-            if (overlay) overlay.remove();
-        }
-        
-        function showHelp() {
-            alert(`🧪 NEON LAB PHYSICS WOW - AYUDA
-
-🎯 OBJETIVO: Coloca objetos para que la partícula caiga por gravedad y llegue al objetivo rojo
-
-🎮 CONTROLES:
-• Arrastra objetos para posicionarlos
-• Doble tap para rotar objetos
-• Presiona DROP para soltar la partícula
-
-🔧 OBJETOS:
-• 🟡 LAUNCHER: Punto de salida (parte superior)
-• 🔴 TARGET: Objetivo a alcanzar (parte inferior)
-• 🔺 RAMP: Rampa que desvía la partícula
-• 🟢 BOUNCY PAD: Superficie elástica que rebota
-• 🔵 BLOCK: Bloque sólido que desvía
-
-💡 CONSEJO: La partícula cae por gravedad, usa los objetos para crear el camino perfecto!`);
-        }
-        
-        function gameLoop(currentTime) {
-            const deltaTime = (currentTime - lastTime) / 1000;
-            lastTime = currentTime;
-            
-            // Clear canvas with enhanced background
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            
-            // Update and render objects
-            gameState.objects.forEach(obj => {
-                obj.update(deltaTime);
-                obj.render(ctx);
-            });
-            
-            // Update and render particle
-            if (gameState.particle) {
-                gameState.particle.update(deltaTime);
-                gameState.particle.render(ctx);
-                
-            }
-            
-            animationId = requestAnimationFrame(gameLoop);
-        }
-        
-        // Event listeners
-        canvas.addEventListener('mousedown', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            for (let obj of gameState.objects) {
-                if (obj.draggable && obj.contains(x, y)) {
-                    gameState.draggedObject = obj;
-                    gameState.dragOffset = { x: x - obj.x, y: y - obj.y };
-                    isDragging = true;
-                    break;
-                }
-            }
-        });
-        
-        canvas.addEventListener('mousemove', (e) => {
-            if (!isDragging || !gameState.draggedObject) return;
-            
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            gameState.draggedObject.x = x - gameState.dragOffset.x;
-            gameState.draggedObject.y = y - gameState.dragOffset.y;
-        });
-        
-        canvas.addEventListener('mouseup', () => {
-            isDragging = false;
-            gameState.draggedObject = null;
-        });
-        
-        // Touch events
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
-            
-            const currentTime = Date.now();
-            if (currentTime - lastTapTime < 300) {
-            // Double tap - rotate object
-            for (let obj of gameState.objects) {
-                if (obj.draggable && obj.contains(x, y)) {
-                    obj.rotation += Math.PI / 4;
-                    // Play rotate sound
-                    playRotateSound();
-                    // Add visual feedback
-                    const effect = document.createElement('div');
-                    effect.className = 'impact-effect';
-                    effect.style.left = x + 'px';
-                    effect.style.top = y + 'px';
-                    effect.style.background = 'radial-gradient(circle, #00FFFF, transparent)';
-                    document.body.appendChild(effect);
-                    setTimeout(() => effect.remove(), 300);
-                    break;
-                }
-            }
-            }
-            lastTapTime = currentTime;
-            
-            for (let obj of gameState.objects) {
-                if (obj.draggable && obj.contains(x, y)) {
-                    gameState.draggedObject = obj;
-                    gameState.dragOffset = { x: x - obj.x, y: y - obj.y };
-                    isDragging = true;
-                    break;
-                }
-            }
-        });
-        
-        canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            if (!isDragging || !gameState.draggedObject) return;
-            
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
-            
-            gameState.draggedObject.x = x - gameState.dragOffset.x;
-            gameState.draggedObject.y = y - gameState.dragOffset.y;
-        });
-        
-        canvas.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            isDragging = false;
-            gameState.draggedObject = null;
-        });
-        
-        // ===== LEADERBOARD FUNCTIONS =====
-        let leaderboard;
-        
-        function showLeaderboard(gameId) {
-            if (window.showLeaderboard && typeof window.showLeaderboard === 'function') {
-                window.showLeaderboard(gameId || 'neon-lab-physics-wow');
-            }
-        }
-        
-        function hideLeaderboard() {
-            const modal = document.querySelector('[style*="position: fixed"]');
+            updateLivesDisplay();
+            loadLevel(1);
+            updateLivesDisplay();            
+            // Remove game over modal
+            const modal = document.querySelector('.victory-message');
             if (modal) modal.remove();
         }
-
-        // Initialize game
-        window.addEventListener('load', () => {
-                resizeCanvas();
-            initBackgroundParticles();
-            initLevel(0);
-            lastTime = performance.now();
-            gameLoop(lastTime);
+        
+        // 🏆 FUNCIÓN PARA MOSTRAR RANKING GLOBAL
+        function showGlobalLeaderboard() {
+            if (!window.neonLabLeaderboard) {
+                window.neonLabLeaderboard = new GlobalLeaderboard('neon-lab-physics');
+            }
             
-            // Initialize leaderboard
+            // Si no hay usuario, pedir nombre primero
+            if (!window.neonLabLeaderboard.currentUser) {
+                window.neonLabLeaderboard.showNamePrompt(false);
+            } else {
+                // Mostrar ranking
+                window.neonLabLeaderboard.showLeaderboard();
+            }
+        }
+        
+        function showGameComplete() {
+            const message = document.createElement('div');
+            message.className = 'victory-message';
+            message.innerHTML = `🏆 ¡TODOS LOS EXPERIMENTOS COMPLETADOS! 🏆<br><span style="font-size: 1rem; color: #39FF14;">¡Eres un científico genial!</span>`;
+            message.style.fontSize = '1.2rem';
+            document.body.appendChild(message);
+            
+            createConfetti();
+            createConfetti(); // Double confetti!
+            
             setTimeout(() => {
-                leaderboard = new GlobalLeaderboard('neon-lab-physics-wow');
-            }, 100);
+                message.remove();
+                // Reset to level 1
+                gameState.currentLevel = 1;
+                loadLevel(1);
+            updateLivesDisplay();            }, 4000);
+        }        function nextLevel() {
+            if (gameState.currentLevel < levels.length) {
+                gameState.currentLevel++;
+                loadLevel(gameState.currentLevel);
+            }
+        }
+        function showHelp() {
+            alert(`🧪 NEON LAB HELP:
+            
+• DRAG objects to move
+• DOUBLE TAP to rotate  
+• TEST to launch particle
+• Guide to green target
+
+Objects:
+📐 Ramps redirect particle
+🟦 Blocks are obstacles
+🟢 Bouncy pads boost`);
+        }
+        
+        // Touch/Mouse handling
+        function getPos(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = (event.clientX || event.touches[0].clientX) - rect.left;
+            const y = (event.clientY || event.touches[0].clientY) - rect.top;
+            return {
+                x: x * (canvas.width / rect.width),
+                y: y * (canvas.height / rect.height)
+            };
+        }
+        
+        function handleStart(event) {
+            event.preventDefault();
+            const pos = getPos(event);
+            const now = Date.now();
+            
+            for (let obj of gameState.objects) {
+                if (obj.draggable && obj.contains(pos.x, pos.y)) {
+                    if (tapTarget === obj && now - lastTapTime < 300) {
+                        obj.rotation += Math.PI / 4;
+                        return;
+                    }
+                    
+                    gameState.draggedObject = obj;
+                    gameState.dragOffset = { x: pos.x - obj.x, y: pos.y - obj.y };
+                    isDragging = true;
+                    tapTarget = obj;
+                    lastTapTime = now;
+                    break;
+                }
+            }
+        }
+        
+        function handleMove(event) {
+            if (!isDragging) return;
+            event.preventDefault();
+            
+            const pos = getPos(event);
+            gameState.draggedObject.x = pos.x - gameState.dragOffset.x;
+            gameState.draggedObject.y = pos.y - gameState.dragOffset.y;
+            
+            // Keep in bounds
+            gameState.draggedObject.x = Math.max(0, Math.min(canvas.width - gameState.draggedObject.width, gameState.draggedObject.x));
+            gameState.draggedObject.y = Math.max(0, Math.min(canvas.height - gameState.draggedObject.height, gameState.draggedObject.y));
+        }
+        
+        function handleEnd(event) {
+            event.preventDefault();
+            isDragging = false;
+            gameState.draggedObject = null;
+        }
+        
+        canvas.addEventListener('mousedown', handleStart);
+        canvas.addEventListener('mousemove', handleMove);
+        canvas.addEventListener('mouseup', handleEnd);
+        canvas.addEventListener('touchstart', handleStart);
+        canvas.addEventListener('touchmove', handleMove);
+        canvas.addEventListener('touchend', handleEnd);
+        
+        function gameLoop(time) {
+            const deltaTime = Math.min((time - lastTime) / 1000, 0.016);
+            lastTime = time;
+            
+            // Verificar si mostrar banners después de 30s
+            checkBannerDisplay();
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Update particle
+            if (gameState.particle) {
+                gameState.particle.update(deltaTime);
+                
+                // Win check
+                if (gameState.particle.active) {
+                    const dx = gameState.particle.x - (gameState.chamber.x + gameState.chamber.width/2);
+                    const dy = gameState.particle.y - (gameState.chamber.y + gameState.chamber.height/2);
+                    if (Math.sqrt(dx*dx + dy*dy) < 20) {
+                        gameState.particle.active = false;
+                        setTimeout(() => {
+                            showEpicVictory();
+                        }, 300);                    }
+                }
+            }
+            
+            // Render
+            gameState.launcher.render(ctx);
+            gameState.chamber.render(ctx);
+            gameState.objects.forEach(obj => obj.render(ctx));
+            if (gameState.particle) gameState.particle.render(ctx);
+            
+            // Tutorial arrow
+            if (gameState.currentLevel === 1 && !gameState.particle) {
+                ctx.save();
+                ctx.strokeStyle = "#FFFF00";
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(gameState.launcher.x + 15, gameState.launcher.y + 15);
+                ctx.lineTo(gameState.chamber.x + 15, gameState.chamber.y);
+                ctx.stroke();
+                ctx.restore();
+            }
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Add missing functions
+        function showInterstitialAd() {
+            try {
+                gtag('event', 'ad_impression', { game_name: 'neon_lab_physics' });
+            } catch (e) {
+                console.log('AdSense not loaded yet');
+            }
+        }
+
+        window.addEventListener('load', () => {
+            // Track page view
+            gtag('event', 'page_view', { game_name: 'neon_lab_physics' });
+            
+            // Simple background music
+            let musicEnabled = false;
+            
+            function initSimpleMusic() {
+                if (musicEnabled) return;
+                musicEnabled = true;
+                
+                const playBgNote = () => {
+                    if (!musicEnabled) return;
+                    
+                    try {
+                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        const melody = [261, 294, 329, 349, 392, 329, 261]; // C4-D4-E4-F4-G4-E4-C4
+                        const noteIndex = Math.floor(Date.now() / 800) % melody.length;
+                        
+                        oscillator.type = 'square';
+                        oscillator.frequency.setValueAtTime(melody[noteIndex], audioContext.currentTime);
+                        
+                        gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + 0.3);
+                    } catch (e) {}
+                    
+                    setTimeout(playBgNote, 800);
+                };
+                
+                setTimeout(playBgNote, 1000);
+            }
+            
+            // Start music on first user interaction
+            document.addEventListener('click', initSimpleMusic, { once: true });
+            document.addEventListener('touchstart', initSimpleMusic, { once: true });            resizeCanvas();
+            loadLevel(1);
+            updateLivesDisplay();            requestAnimationFrame(gameLoop);
+            
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                loadLevel(gameState.currentLevel);
+            });
         });
         
-        window.addEventListener('resize', resizeCanvas);
+        // Ads helpers - ESTRATEGIA AGRESIVA PERO INTELIGENTE
+        function showAds() {
+            const top = document.getElementById('top-banner');
+            const bottom = document.getElementById('bottom-banner');
+            const side = document.getElementById('side-banner');
+            const menu = document.getElementById('menu-banner');
+            if (top) top.style.display = 'flex';
+            if (bottom) bottom.style.display = 'flex';
+            if (side) side.style.display = 'block';
+            if (menu) menu.style.display = 'block';
+        }
         
-        // Add shake animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-2px); }
-                75% { transform: translateX(2px); }
+        function hideAds() {
+            const top = document.getElementById('top-banner');
+            const bottom = document.getElementById('bottom-banner');
+            const side = document.getElementById('side-banner');
+            const menu = document.getElementById('menu-banner');
+            if (top) top.style.display = 'none';
+            if (bottom) bottom.style.display = 'none';
+            if (side) side.style.display = 'none';
+            if (menu) menu.style.display = 'none';
+        }
+        
+        // NUEVA ESTRATEGIA: Mostrar banners después de 30 segundos de juego
+        let gameStartTime = 0;
+        let bannerShown = false;
+        
+        function checkBannerDisplay() {
+            if (!gameState.gameActive || bannerShown) return;
+            
+            const gameTime = Date.now() - gameStartTime;
+            if (gameTime > 30000) { // 30 segundos
+                showAds();
+                bannerShown = true;
+                console.log('💰 Banners mostrados después de 30s de juego');
             }
-        `;
-        document.head.appendChild(style);
+        }
+        
+        // Mostrar banners en pausa (oportunidad de monetización)
+        function showPauseAds() {
+            if (gameState.paused) {
+                showAds();
+                console.log('💰 Banners mostrados durante pausa');
+            }
+        }
     </script>
     
     <!-- MONETAG MULTI TAG -->
